@@ -1,0 +1,102 @@
+$color-primary: #8e278a;
+$color-links: rgba(255, 255, 255, 0.5);
+$btn-color-links: #4f8bf1;
+
+.accordion li {
+  padding: 0.1rem;
+}
+
+.accordion a {
+  color: $color-links !important;
+  margin-right: 5px;
+}
+
+.accordion a:hover,
+.accordion a:focus,
+.btn-link:hover,
+.btn-link:focus {
+  color: rbga(255, 255, 255, 1) !important;
+  outline: 1px dotted #fff !important;
+  outline-offset: 0px !important;
+}
+
+.accordion .nav-item:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.accordion a.nav-link:after,
+.accordion a.nav-link.active:after {
+  display: none !important;
+}
+
+.accordion .card-header button {
+  color: $color-links !important;
+}
+
+.accordion .card-body .nav li {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.accordion .card-body .nav a.active {
+  border-right: 4px solid $color-primary !important;
+  background: rgb(39, 39, 39);
+  background: linear-gradient(
+    90deg,
+    rgba(39, 39, 39, 1) 10%,
+    rgba(24, 23, 23, 1) 100%
+  );
+  color: #fff !important;
+  padding: 0.5rem 1rem !important;
+  font-weight: 500;
+}
+
+.accordion h2 .btn-link {
+  padding-left: 1.6rem !important;
+  font-size: 1.1rem !important;
+}
+
+.btn-link {
+  color: $btn-color-links !important;
+  margin: 2px;
+}
+
+.btn-link:hover,
+.btn-link:focus,
+.collapsible-link:hover,
+.collapsible-link:focus {
+  color: #fff !important;
+  background: rgba(24, 23, 23, 1);
+  text-decoration: none;
+}
+
+.collapsible-link {
+  width: 97%;
+  position: relative;
+  text-align: left;
+}
+
+.collapsible-link::before,
+.collapsible-link[aria-expanded="false"]::before {
+  content: "\f107";
+  position: absolute;
+  top: 50%;
+  left: 0.2rem;
+  transform: translateY(-50%);
+  display: block;
+  font-family: "FontAwesome";
+  font-size: 1.3rem;
+}
+
+.collapsible-link[aria-expanded="true"]::before {
+  content: "\f106";
+}
+
+.accordion h2 .btn-link {
+  color: #fff !important;
+}
+
+.accordion h2 .btn-link .badge {
+  position: absolute;
+  right: 0.2rem;
+  top: 1rem;
+}

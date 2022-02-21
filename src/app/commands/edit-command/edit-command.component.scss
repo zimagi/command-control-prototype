@@ -1,0 +1,40 @@
+.badge.text-lg {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+// label {
+//   text-transform: uppercase;
+// }
+legend {
+  padding: 0.4rem 1rem;
+  font-size: 1.3rem;
+  border-bottom: 1px solid #eee;
+  margin-top: -0.6rem;
+}
+
+.mat-expansion-panel {
+  background: white !important;
+}
+.mat-expansion-panel .mat-content,
+.mat-expansion-panel-header-title,
+.mat-expansion-panel .mat-list-text {
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+.mat-expansion-panel:hover .mat-expansion-panel-header-title,
+.mat-expansion-panel:focus .mat-expansion-panel-header-title,
+.mat-expansion-panel.mat-expanded .mat-expansion-panel-header-title,
+.mat-expansion-panel .mat-list-item:hover .mat-list-text,
+.mat-expansion-panel .mat-list-item:hover .mat-list-text {
+  color: rgba(0, 0, 0, 1) !important;
+}
+
+.mat-expansion-panel .mat-list-item:hover,
+.mat-expansion-panel .mat-list-item:focus {
+  background: rgba(0, 0, 0, 0.3) !important;
+}
+
+#btn-container {
+  box-shadow: 0px -8px 8px -6px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 777;
+}

@@ -1,0 +1,75 @@
+<app-commands-header></app-commands-header>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-8 border-right">
+      <div class="row">
+        <div id="main" class="scroll col-3 py-4">
+          <!-- <app-accordion [data]="comm"></app-accordion> -->
+
+          <mat-accordion>
+            <mat-expansion-panel
+              hideToggle
+              *ngFor="let command of dataCommands[0] | keyvalue"
+            >
+              <mat-expansion-panel-header>
+                <mat-panel-title> {{ command.key }} </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div
+                class="list-group"
+                [innerHTML]="buildOptions(command.key, command.value)"
+              ></div>
+              <!-- <mat-selection-list [multiple]="false">
+                <mat-list-option
+                  *ngFor="let action of [command.value] | keyvalue"
+                >
+                  {{ action.key }}
+                </mat-list-option>
+              </mat-selection-list> -->
+            </mat-expansion-panel>
+          </mat-accordion>
+          <!-- <mat-accordion>
+            <mat-expansion-panel hideToggle [expanded]="true">
+              <mat-expansion-panel-header>
+                <mat-panel-title> user </mat-panel-title>
+              </mat-expansion-panel-header>
+              <mat-selection-list [multiple]="false">
+                <mat-list-option [selected]="true"> rotate </mat-list-option>
+                <mat-list-option> list </mat-list-option>
+                <mat-list-option> get </mat-list-option>
+                <mat-list-option> save </mat-list-option>
+                <mat-list-option> remove </mat-list-option>
+                <mat-list-option> clear </mat-list-option>
+                <mat-list-option> save </mat-list-option>
+              </mat-selection-list>
+            </mat-expansion-panel>
+          </mat-accordion> -->
+        </div>
+        <div class="col-9 p-4" style="background: rgba(0, 0, 0, 0.03)">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </div>
+    <div class="col-4 p-4">
+      <div class="card">
+        <h3 class="card-header">Status</h3>
+        <div class="card-body">
+          <p class="card-text">--</p>
+        </div>
+      </div>
+      <div class="card mt-3">
+        <h3 class="card-header">
+          <mat-icon aria-hidden="false" class="text-primary">message</mat-icon>
+          Messages
+        </h3>
+        <div class="card-body">
+          <p class="card-text">--</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col p-5">
+      <!-- Content will load here in the outlet -->
+      <!-- <router-outlet></router-outlet> -->
+    </div>
+  </div>
+</div>

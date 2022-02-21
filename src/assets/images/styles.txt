@@ -1,0 +1,56 @@
+/*Fred Override Styles*/
+/*by Aramis*/
+.fred--block {
+      border: 2px dashed red;
+      margin: 3px 0 3px 0;
+}
+.fred--block .fred--block{
+    border: 0px;
+}
+.fred--block *[data-fred-dropzone]{
+    border: 2px dotted red;
+    margin: 2px;
+    padding: 20px;
+    position: relative;
+}
+.fred--block *[data-fred-dropzone]::before{
+    content: 'DROPZONE';
+    color: red;
+    font-size: 10px;
+    position: absolute;
+    top: 4px;
+    left: 20px;
+    opacity: .7;
+    
+}
+.fred--toolbar-plugins{
+    box-shadow: 0 0 4px #363636;
+}
+.fred--block.fred-modal::before{
+    content: 'MODAL FRED ELEMENT';
+    font-size: 12px;
+    text-shadow: 0px 0px 5px #fff;
+    color: #00205c;
+}
+.fred--block.fred-modal{
+    border: 1px solid #ddd !important;
+    background: linear-gradient(45deg, #eee 12.5%, #fff 12.5%, #fff 37.5%, #eee 37.5%, #eee 62.5%, #fff 62.5%, #fff 87.5%, #eee 87.5%);
+    background-size: 10px 10px;
+    background-position: 50px 50px;
+    padding: 1rem;
+}
+.fred--block.fred-modal .modal,
+.fred--block.fred-modal .modal{
+    display: block !important;
+    opacity: 1 !important;
+    position: relative !important;
+}
+.fred--block.fred-modal .fade:not(.show){
+     opacity: 1 !important;
+}
+.fred--block.fred-modal .modal.fade .modal-dialog{
+    transform: none !important;
+}
+.fred--modal .ui-widget.elfinder-button-menu.elfinder-button-search-menu{
+    top: 25px !important;
+}

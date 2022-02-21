@@ -1,0 +1,142 @@
+$color-primary: #8e278a;
+
+h1 {
+  color: #fff;
+  font-weight: normal;
+  padding-top: 0.6rem;
+}
+
+header {
+  z-index: 500;
+}
+
+header div.bg-primary {
+  border: 2px solid #68316b;
+}
+
+header .shadow {
+  box-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.35) !important;
+}
+
+header a {
+  color: #fff;
+}
+
+header a:after {
+  content: "";
+  width: 40% !important;
+  height: 2px !important;
+  background: transparent;
+  display: block;
+  margin: 5px auto;
+}
+
+header a.active {
+  font-weight: bold;
+}
+
+header a:hover,
+header a:focus,
+header a:active {
+  text-decoration: none !important;
+}
+
+header a:hover:after,
+header a:focus:after,
+header a:active:after,
+header a.active:after {
+  width: 100% !important;
+  background: #fff;
+}
+
+header {
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+  margin-right: 0px !important;
+  margin-left: 0px !important;
+}
+
+#header .btn-success,
+#header .btn-cancel {
+  top: 10px;
+  padding: 0.3rem !important;
+  z-index: 1000;
+  width: 42px;
+  height: 42px;
+}
+
+#header .btn-success {
+  right: -30px !important;
+}
+
+#header .btn-cancel {
+  right: -75px;
+  background: transparent;
+  color: #fff;
+  border-color: #fff;
+}
+
+.brand {
+  background-image: url(/assets/images/symbol-zimagi-white.svg);
+  // background-image: url(/assets/images/logo-zimagi-white.svg);
+  background-repeat: no-repeat;
+  background-size: 50px 50px;
+  background-position: center center;
+  // margin-top: 5px;
+  width: 70px;
+  height: 60px;
+}
+
+.profile-pic {
+  display: inline-block;
+  background-image: url(/assets/images/profile-pic-sample.png);
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+  background-position: center center;
+  width: 30px;
+  height: 30px;
+  border-radius: 30px;
+  margin-right: 0.6rem;
+  position: absolute;
+  left: 10px;
+  top: 10px;
+}
+
+@media (max-width: 992px) {
+  header .pt-2 {
+    padding-top: 0px !important;
+  }
+
+  #drop-user {
+    width: 100% !important;
+  }
+
+  #drop-user .btn-primary {
+    background: transparent !important;
+    background-color: transparent !important;
+    border-color: transparent !important;
+    text-align: left !important;
+  }
+
+  #head-platform-name-container {
+    // position: absolute;
+    // top: 40px;
+    // padding: 1rem 2rem;
+    display: none;
+  }
+
+  h1 {
+    color: $color-primary !important;
+  }
+}
+
+@media (max-width: 768px) {
+  #lnk-documentation-container,
+  #lnk-platforms-container {
+    display: none !important;
+  }
+
+  .col.pt-2 {
+    padding-top: 0 !important;
+  }
+}

@@ -25,7 +25,18 @@ export class CommandsComponent implements OnInit {
   }
   buildOptions(command: any, actions: any) {
     let result: string = '';
-    if (actions!._type)
+    console.log(actions[0]);
+    if (actions._type == 'link') {
+      console.log('---' + '_link');
+      result +=
+        '<a href="commands/' +
+        command +
+        '/' +
+        command +
+        '" class="list-group-item list-group-item-action">' +
+        command +
+        '</a>';
+    } else {
       for (let [key, value] of Object.entries(actions)) {
         // console.log(`${key}: ${value}`);
         result +=
@@ -37,6 +48,7 @@ export class CommandsComponent implements OnInit {
           key +
           '</a>';
       }
+    }
     // console.log(result);
     return this._sanitizer.bypassSecurityTrustHtml(result);
   }
