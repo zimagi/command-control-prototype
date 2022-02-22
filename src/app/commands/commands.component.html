@@ -1,4 +1,5 @@
 <app-commands-header></app-commands-header>
+<div id="overlay"></div>
 <div class="container-fluid">
   <div class="row">
     <div class="col-8 border-right">
@@ -14,10 +15,14 @@
               <mat-expansion-panel-header>
                 <mat-panel-title> {{ command.key }} </mat-panel-title>
               </mat-expansion-panel-header>
-              <div
+              <app-actions-item
+                [command]="command.key"
+                [actions]="command.value"
+              ></app-actions-item>
+              <!-- <div
                 class="list-group"
                 [innerHTML]="buildOptions(command.key, command.value)"
-              ></div>
+              ></div> -->
               <!-- <mat-selection-list [multiple]="false">
                 <mat-list-option
                   *ngFor="let action of [command.value] | keyvalue"
@@ -44,26 +49,35 @@
             </mat-expansion-panel>
           </mat-accordion> -->
         </div>
-        <div class="col-9 p-4" style="background: rgba(0, 0, 0, 0.03)">
+        <div class="col-9 p-4 bg-panel border-right">
+          <div class="row mt-3" id="begin">
+            <mat-icon class="col-md-1 text-primary mt-1 mr-2"
+              >keyboard_backspace</mat-icon
+            >
+            <h2 class="col-md-6 pl-2">
+              <span class="d-block pl-3"
+                >Please select from the list of commands from left panel.</span
+              >
+            </h2>
+          </div>
           <router-outlet></router-outlet>
         </div>
       </div>
     </div>
-    <div class="col-4 p-4">
-      <div class="card">
-        <h3 class="card-header">Status</h3>
-        <div class="card-body">
-          <p class="card-text">--</p>
+    <div id="response-panel" class="col-4 p-4 scroll">
+      <div [hidden]="responsesObj.length == 0" class="row border-bottom pb-0">
+        <div class="col-md-1 pr-0">
+          <mat-icon class="text-primary">comment_alt_text</mat-icon>
+        </div>
+        <div class="col-md-6" style="padding-left: 0px !important">
+          <h4>Response</h4>
         </div>
       </div>
-      <div class="card mt-3">
-        <h3 class="card-header">
-          <mat-icon aria-hidden="false" class="text-primary">message</mat-icon>
-          Messages
-        </h3>
-        <div class="card-body">
-          <p class="card-text">--</p>
-        </div>
+      <div id="response-container" class="pt-3">
+        <app-response-item
+          [action]="response.action"
+          *ngFor="let response of responsesObj"
+        ></app-response-item>
       </div>
     </div>
 

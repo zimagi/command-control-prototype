@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PipeTransform, Pipe } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -15,6 +15,7 @@ export class EditCommandComponent implements OnInit {
   actionName: any = 'rotate';
   action: any = {};
   acceptedKeys: any[] = ['url'];
+  @Output() emitAddResponse: EventEmitter<any> = new EventEmitter();
 
   constructor(
     private _sanitizer: DomSanitizer,
@@ -28,6 +29,7 @@ export class EditCommandComponent implements OnInit {
     $(window).resize(function () {
       $('#scroll-win').css('height', window.innerHeight - 190 + 'px');
     });
+    $('#begin').hide();
     this.allCommands = this.appService.getCommands();
     this.route.paramMap.subscribe((params) => {
       this.commandName = params.get('command');
@@ -39,12 +41,15 @@ export class EditCommandComponent implements OnInit {
     return Object.keys(item);
   }
   getActionDetails(obj: any) {
-    // console.log(obj);
-    for (let [key, value] of Object.entries(obj)) {
-      // console.log(key);
-      if (key == this.actionName) {
-        // console.log(value);
-        this.action = value;
+    if (this.actionName === null) {
+      this.action = obj;
+    } else {
+      for (let [key, value] of Object.entries(obj)) {
+        // console.log(key);
+        if (key == this.actionName) {
+          // console.log(value);
+          this.action = value;
+        }
       }
     }
   }
@@ -130,6 +135,24 @@ export class EditCommandComponent implements OnInit {
 
     // console.log(result);
     return this._sanitizer.bypassSecurityTrustHtml(result);
+  }
+  addResponse() {
+    // console.log('emit');
+    // this.emitAddResponse.emit('clicked');
+    let arr = this.appService.responses;
+    if (this.actionName === null) {
+      this.actionName = '';
+    } else {
+      arr.push({ action: this.commandName + ' ' + this.actionName });
+    }
+
+    this.appService.responses = arr;
+    // Disable execute button
+    $('#btn-execute').attr('disabled', true);
+    $('#btn-execute').css('opacity', '.5');
+
+    // Show overlay
+    // $('#overlay').addClass('show');
   }
 }
 @Pipe({ name: 'safeHtml' })

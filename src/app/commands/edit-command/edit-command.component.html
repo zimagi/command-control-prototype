@@ -103,6 +103,14 @@
     id="btn-container"
     class="mt-auto bd-highlight pt-4 border-top border-secondary"
   >
-    <button mat-raised-button color="primary" class="btn-lg">Execute</button>
+    <button
+      id="btn-execute"
+      mat-raised-button
+      color="primary"
+      class="btn-lg"
+      (click)="addResponse()"
+    >
+      Execute
+    </button>
   </div>
 </div>

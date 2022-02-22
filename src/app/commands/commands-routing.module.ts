@@ -10,6 +10,7 @@ const routes: Routes = [
     children: [
       { path: '', component: CommandsComponent },
       { path: ':command/:action', component: EditCommandComponent },
+      { path: ':command', component: EditCommandComponent },
     ],
   },
 ];

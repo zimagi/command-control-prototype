@@ -5,6 +5,7 @@ import { CommandsRoutingModule } from './commands-routing.module';
 import { EditCommandComponent } from './edit-command/edit-command.component';
 import { MaterialModule } from '../shared/material/material.module';
 import { SafeHtmlPipe } from '../safe-html.pipe';
+import { PreloaderComponent } from '../shared/preloader/preloader.component';
 
 @NgModule({
   declarations: [EditCommandComponent, SafeHtmlPipe],

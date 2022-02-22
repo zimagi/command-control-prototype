@@ -10,6 +10,7 @@ declare const $: any;
 })
 export class CommandsComponent implements OnInit {
   dataCommands: any[] = [];
+  responsesObj: any;
   constructor(
     private router: Router,
     private appService: AppService,
@@ -18,16 +19,18 @@ export class CommandsComponent implements OnInit {
 
   ngOnInit(): void {
     this.dataCommands = this.appService.getCommands();
-    $('#main').css('height', window.innerHeight - 80 + 'px');
+    $('#main, #response-panel').css('height', window.innerHeight - 80 + 'px');
     $(window).resize(function () {
-      $('#main').css('height', window.innerHeight - 80 + 'px');
+      $('#main, #response-panel').css('height', window.innerHeight - 80 + 'px');
     });
+    // Get responses
+    this.responsesObj = this.appService.responses;
   }
   buildOptions(command: any, actions: any) {
     let result: string = '';
-    console.log(actions[0]);
+
     if (actions._type == 'link') {
-      console.log('---' + '_link');
+      // console.log('---' + '_link');
       result +=
         '<a href="commands/' +
         command +

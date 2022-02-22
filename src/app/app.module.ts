@@ -13,6 +13,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommandsModule } from './commands/commands.module';
 import { AppService } from './app.service';
 import { HttpClientModule } from '@angular/common/http';
+import { ResponseItemComponent } from './commands/response-item/response-item.component';
+import { PreloaderComponent } from './shared/preloader/preloader.component';
+import { DatePipe } from '@angular/common';
+import { ActionsItemComponent } from './commands/actions-item/actions-item.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +25,9 @@ import { HttpClientModule } from '@angular/common/http';
     CommandsComponent,
     CommandsHeaderComponent,
     AccordionComponent,
+    ResponseItemComponent,
+    PreloaderComponent,
+    ActionsItemComponent,
   ],
   imports: [
     BrowserModule,
@@ -30,7 +37,7 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserAnimationsModule,
     MaterialModule,
   ],
-  providers: [AppService],
+  providers: [AppService, DatePipe],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

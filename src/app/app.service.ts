@@ -8,11 +8,18 @@ declare let $: any;
   providedIn: 'root',
 })
 export class AppService {
+  responsesList: any[] = [];
   constructor(
     private http: HttpClient,
     private router: Router,
     private route: ActivatedRoute
   ) {}
+  get responses(): any[] {
+    return this.responsesList;
+  }
+  set responses(arr: any[]) {
+    this.responsesList = arr;
+  }
   getCommands() {
     return [
       {

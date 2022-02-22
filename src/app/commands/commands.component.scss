@@ -1,0 +1,26 @@
+#begin h2 {
+  color: rgb(158, 158, 158);
+  font-weight: bold;
+  text-shadow: 1px 1px 1px rgba($color: #ffff, $alpha: 0.7);
+}
+.bg-panel {
+  background: rgba(0, 0, 0, 0.03);
+}
+.bg-panel.border-right {
+  border-right: 1px solid rgba($color: #000, $alpha: 0.06);
+}
+#overlay {
+  background-color: rgba($color: #363636, $alpha: 0.7);
+  width: 1px;
+  height: 100%;
+  position: absolute;
+  left: -3px;
+  z-index: 9999;
+  display: none;
+}
+#overlay.show {
+  width: 67%;
+  height: 100%;
+  left: 0px;
+  display: block;
+}
