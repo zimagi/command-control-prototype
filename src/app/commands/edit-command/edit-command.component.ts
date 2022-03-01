@@ -1,4 +1,13 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  AfterViewInit,
+  OnChanges,
+  SimpleChanges,
+  DoCheck,
+} from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PipeTransform, Pipe } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -25,17 +34,24 @@ export class EditCommandComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    $('#scroll-win').css('height', window.innerHeight - 190 + 'px');
-    $(window).resize(function () {
-      $('#scroll-win').css('height', window.innerHeight - 190 + 'px');
-    });
-    $('#begin').hide();
     this.allCommands = this.appService.getCommands();
     this.route.paramMap.subscribe((params) => {
       this.commandName = params.get('command');
       this.actionName = params.get('action');
       this.getCommandDetails(this.commandName);
+      setTimeout(() => {
+        this.resetScroll();
+      }, 100);
     });
+  }
+
+  resetScroll() {
+    $('#scroll-win').css('height', window.innerHeight - 190 + 'px');
+    $(window).resize(function () {
+      $('#scroll-win').css('height', window.innerHeight - 190 + 'px');
+    });
+    $('#begin').hide();
+    $('#scroll-win').scrollTop(0);
   }
   getKey(item: any) {
     return Object.keys(item);
@@ -86,34 +102,60 @@ export class EditCommandComponent implements OnInit {
   getDefaultValue(val: any) {
     return val.substring(val.indexOf('<') + 1, val.lastIndexOf('>'));
   }
-  returnInputHtml(type: any, title: any, desc: any) {
+  getDatePlaceholder(val: any) {
+    if (val.indexOf('YYYY-MM-DD HH:MM:SS') > -1) {
+      return 'YYYY-MM-DD HH:MM:SS';
+    }
+    return '';
+  }
+  returnInputHtml(name: any, type: any, title: any, desc: any) {
     let result: string = '';
     // let n: number = Math.floor(Math.random() * 500) + 1;
     let valueDefault: any = this.getDefaultValue(desc);
+    let datePlaceholder: any = this.getDatePlaceholder(desc);
     switch (type) {
       case 'integer':
         result =
-          '<input type="text" class="form-control" value="' +
-          valueDefault +
-          '"/><div><span class="badge bg-secondary d-inline-block text-uppercase">integer</span><div class="mt-2">' +
+          '<div class="pb-2">' +
           desc +
-          '<div></div>';
+          '</div><input type="text" class="form-control" value="' +
+          valueDefault +
+          '"/><div><span class="badge bg-secondary d-inline-block text-uppercase">integer</span></div>';
         break;
       case 'string':
         result =
-          '<input type="text" class="form-control" value=""/><div><span class="badge bg-secondary d-inline-block text-uppercase">string</span><div class="mt-2">' +
+          '<div class="pb-2">' +
           desc +
-          '<div></div>';
+          '</div><input type="text" class="form-control" value="" placeholder="' +
+          datePlaceholder +
+          '"/><div><span class="badge bg-secondary d-inline-block text-uppercase">string</span></div>';
         break;
       case 'array':
         result =
-          '<input type="text" class="form-control" value=""/><div><span class="badge bg-secondary d-inline-block text-uppercase">array</span><div class="mt-2">' +
+          '<div class="pb-2">' +
+          desc.replace('(comma separated)', '') +
+          '</div><div id="' +
+          name +
+          '_arr" class="col"><ul class="list-group"><li class="list-group-item d-flex bd-highlight align-items-center"><input type="text" class="form-control flex-grow-1 bd-highlight" /><span class="d-inline-block" style="width: 40px;"></span></li></ul><a href="javascript://" onClick="addArrayItem(\'' +
+          name.trim() +
+          '_arr\')" class="btn btn-primary btn-sm my-3">+ Add</a></div>';
+
+        break;
+      case 'object':
+        result =
+          '<div class="pb-2">' +
           desc +
-          '<div></div>';
+          '</div><div id="' +
+          name +
+          '_obj" class="col"><ul class="list-group"><li class="list-group-item d-flex bd-highlight align-items-center"><div class="col-5"><label class="form-label">Key</label><input type="text" class="form-control bd-highlight" /></div><div class="col-1 d-flex justify-content-center align-items-center"><span class="mt-4">=</span></div><div class="col-5"><label class="form-label">Value</label><input type="text" class="form-control bd-highlight" /></div><div class="col-1"><span class="d-inline-block" style="width: 40px;"></span></div></li></ul><a href="javascript://" onClick="addObjItem(\'' +
+          name.trim() +
+          '_obj\')" class="btn btn-primary btn-sm my-3">+ Add</a></div>';
         break;
       case 'boolean':
         result =
-          '<div class="form-check"><input class="form-check-input" type="radio" checked name="' +
+          '<div class="pb-2">' +
+          desc +
+          '</div><div class="form-check"><input class="form-check-input" type="radio" checked name="' +
           title +
           '"><label class="form-check-label" for="radio1-' +
           title +
@@ -121,9 +163,7 @@ export class EditCommandComponent implements OnInit {
           title +
           '" ><label class="form-check-label" for="radio2-' +
           title +
-          '">true</label></div><div class="mt-3">' +
-          desc +
-          '</div>';
+          '">true</label></div>';
         break;
     }
     // result +=
@@ -136,6 +176,7 @@ export class EditCommandComponent implements OnInit {
     // console.log(result);
     return this._sanitizer.bypassSecurityTrustHtml(result);
   }
+
   addResponse() {
     // console.log('emit');
     // this.emitAddResponse.emit('clicked');

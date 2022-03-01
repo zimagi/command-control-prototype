@@ -45,19 +45,26 @@
           <div class="card">
             <div class="card-body">
               <div class="mb-3 row mt-3">
-                <label for="name" class="col-sm-3 col-form-label text-right">{{
-                  item.name
-                }}</label>
-                <div
-                  class="pl-5 col-sm-6"
-                  [innerHTML]="
-                    returnInputHtml(
-                      item.schema._type,
-                      item.schema.title,
-                      item.schema.description
-                    )
-                  "
-                ></div>
+                <div class="field-container">
+                  <div class="pl-5">
+                    <label for="name" class="col-form-label"
+                      ><strong>
+                        {{ item.name }}
+                      </strong></label
+                    >
+                  </div>
+                  <div
+                    class="pl-5 col-md-6"
+                    [innerHTML]="
+                      returnInputHtml(
+                        item.name,
+                        item.schema._type,
+                        item.schema.title,
+                        item.schema.description
+                      )
+                    "
+                  ></div>
+                </div>
               </div>
             </div>
           </div>
