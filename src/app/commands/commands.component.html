@@ -13,7 +13,9 @@
               *ngFor="let command of dataCommands[0] | keyvalue"
             >
               <mat-expansion-panel-header>
-                <mat-panel-title> {{ command.key }} </mat-panel-title>
+                <mat-panel-title>
+                  <strong>{{ command.key }}</strong>
+                </mat-panel-title>
               </mat-expansion-panel-header>
               <app-actions-item
                 [command]="command.key"

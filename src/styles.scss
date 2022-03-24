@@ -172,7 +172,8 @@ button,
   // min-width: 140px !important;
   // max-width: 140px !important;
   min-height: 500px;
-  background: #3c3c3c;
+  background: #29282d;
+  // background: #3c3c3c;
   color: #fff;
   z-index: 99;
 }
@@ -475,4 +476,56 @@ body {
 }
 .mat-expansion-panel-header.mat-expanded {
   border: none !important;
+}
+
+// Tree styles
+#main {
+  .accordion-button,
+  .accordion-button:not(.collapsed),
+  .accordion-item {
+    background-color: transparent !important;
+    color: #fff !important;
+    box-shadow: none !important;
+  }
+  .accordion-button {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  .accordion-header button.accordion-button {
+    padding: 0.4rem !important;
+  }
+  .border-bottom {
+    border-color: rgba(255, 255, 255, 0.3) !important;
+  }
+  .mat-expansion-panel-body {
+    padding-right: 0.6rem !important;
+  }
+  .mat-expansion-panel-header,
+  .tree-lnk {
+    font-size: 1rem;
+  }
+  .mat-expansion-panel-body {
+    padding-right: 0.6rem !important;
+  }
+  .accordion-body {
+    padding-right: 0px !important;
+  }
+  .tree-parent {
+    border: 1px solid white !important;
+  }
+  .tree-lnk {
+    color: #fff !important;
+    display: block;
+    width: 100%;
+    padding: 0.4rem;
+    margin: 0.4rem 0rem 0.4rem 0rem;
+    text-decoration: none;
+  }
+  .tree-lnk:hover,
+  .tree-lnk:focus {
+    background: rgba(0, 0, 0, 0.2);
+  }
+  .accordion-button::after {
+    background-size: 90% 90%;
+    background-image: url(assets/images/chevron-primary.svg);
+  }
 }

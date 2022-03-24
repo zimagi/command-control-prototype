@@ -75,3 +75,14 @@ function addObjItem(id) {
     '<li class="list-group-item d-flex bd-highlight align-items-center"><div class="col-5"><label class="form-label">Key</label><input type="text" class="form-control bd-highlight" /></div><div class="col-1 d-flex justify-content-center align-items-center"><span class="mt-4">=</span></div><div class="col-5"><label class="form-label">Value</label><input type="text" class="form-control bd-highlight" /></div><div class="col-1"><a href="javascript://" class="bd-highlight remove-icon" style="margin-top: 1.9rem !important;margin-left: 0px !important" title="Remove item"><span class="sr-only">Remove</span></a></div></li>'
   );
 }
+function goTo(action) {
+  setTimeout(() => {
+    $("#begin").hide();
+  }, 200);
+  document.location.href = "../#/commands/" + action;
+  // if (noAction === true) {
+  //   this.router.navigate(['/commands/' + this.command]);
+  // } else {
+  //   this.router.navigate(['/commands/' + this.command + '/' + action]);
+  // }
+}

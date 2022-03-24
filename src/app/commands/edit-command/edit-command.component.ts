@@ -21,7 +21,7 @@ declare const $: any;
 export class EditCommandComponent implements OnInit {
   allCommands: any = [];
   commandName: any = '';
-  actionName: any = 'rotate';
+  actionName: any = '';
   action: any = {};
   acceptedKeys: any[] = ['url'];
   @Output() emitAddResponse: EventEmitter<any> = new EventEmitter();
@@ -45,6 +45,15 @@ export class EditCommandComponent implements OnInit {
     });
   }
 
+  formatBreadcrumbs(str: string) {
+    let result = '';
+
+    if (str != null || str != undefined) {
+      result = str.replace('-', '/');
+    }
+    return result;
+  }
+
   resetScroll() {
     $('#scroll-win').css('height', window.innerHeight - 190 + 'px');
     $(window).resize(function () {
@@ -53,9 +62,11 @@ export class EditCommandComponent implements OnInit {
     $('#begin').hide();
     $('#scroll-win').scrollTop(0);
   }
+
   getKey(item: any) {
     return Object.keys(item);
   }
+
   getActionDetails(obj: any) {
     if (this.actionName === null) {
       this.action = obj;
@@ -69,14 +80,65 @@ export class EditCommandComponent implements OnInit {
       }
     }
   }
+
+  isObject(value: any): any {
+    return !!(value && typeof value === 'object' && !Array.isArray(value));
+  }
+
+  findNestedObject(obj: any, keyToMatch = '') {
+    if (this.isObject(obj)) {
+      const entries = Object.entries(obj);
+
+      for (let i = 0; i < entries.length; i += 1) {
+        const [objectKey, objectValue] = entries[i];
+        if (objectKey === keyToMatch) {
+          return obj;
+        }
+
+        if (this.isObject(objectValue)) {
+          const child: any = this.findNestedObject(objectValue, keyToMatch);
+
+          if (child !== null) {
+            return child;
+          }
+        }
+      }
+    }
+
+    return null;
+  }
+
   getCommandDetails(name: string) {
+    //console.log(name);
+    const keysArr = name.split('-');
+    const len = keysArr.length;
+    let lastKey = keysArr[len - 1];
+    let command: any = [];
     for (let [key, value] of Object.entries(this.allCommands[0])) {
-      if (name == key) {
+      if (keysArr[0] == key) {
         // console.log(value);
-        this.getActionDetails(value);
+        command = value;
+      }
+    }
+    // console.log(command);
+    // console.log('last = ' + keysArr[len - 1]);
+
+    const lastKeyParent = this.findNestedObject(command, lastKey);
+    // console.log(this.findNestedObject(lastKeyParent, lastKey));
+    // console.log(this.isObject(lastKeyParent));
+    if (!this.isObject(lastKeyParent)) {
+      this.getActionDetails(lastKeyParent);
+    } else {
+      // is object array
+      for (let [key, value] of Object.entries(lastKeyParent)) {
+        if (lastKey == key) {
+          // console.log(value);
+          this.getActionDetails(value);
+        }
       }
     }
   }
+
   keyInArray(ele: any): boolean {
     if (this.acceptedKeys.includes(ele)) {
       // console.log(ele + ': ' + true);
@@ -85,6 +147,7 @@ export class EditCommandComponent implements OnInit {
     // console.log(ele + ': ' + false);
     return false;
   }
+
   getSchema(obj: any) {
     let result: string = '';
     for (let [key, value] of Object.entries(obj)) {
@@ -99,15 +162,18 @@ export class EditCommandComponent implements OnInit {
     // console.log(result);
     return this._sanitizer.bypassSecurityTrustHtml(result);
   }
+
   getDefaultValue(val: any) {
     return val.substring(val.indexOf('<') + 1, val.lastIndexOf('>'));
   }
+
   getDatePlaceholder(val: any) {
     if (val.indexOf('YYYY-MM-DD HH:MM:SS') > -1) {
       return 'YYYY-MM-DD HH:MM:SS';
     }
     return '';
   }
+
   returnInputHtml(name: any, type: any, title: any, desc: any) {
     let result: string = '';
     // let n: number = Math.floor(Math.random() * 500) + 1;
@@ -202,4 +268,7 @@ export class SafeHtmlPipe implements PipeTransform {
   transform(value: string) {
     return this.sanitized.bypassSecurityTrustHtml(value);
   }
+}
+function findVal(arg0: any, key: any): any {
+  throw new Error('Function not implemented.');
 }

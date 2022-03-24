@@ -26,6 +26,7 @@ export class CommandsComponent implements OnInit {
     // Get responses
     this.responsesObj = this.appService.responses;
   }
+
   buildOptions(command: any, actions: any) {
     let result: string = '';
 

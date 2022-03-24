@@ -15,7 +15,11 @@ import { AppService } from './app.service';
 import { HttpClientModule } from '@angular/common/http';
 import { ResponseItemComponent } from './commands/response-item/response-item.component';
 import { PreloaderComponent } from './shared/preloader/preloader.component';
-import { DatePipe } from '@angular/common';
+import {
+  DatePipe,
+  HashLocationStrategy,
+  LocationStrategy,
+} from '@angular/common';
 import { ActionsItemComponent } from './commands/actions-item/actions-item.component';
 
 @NgModule({
@@ -37,7 +41,11 @@ import { ActionsItemComponent } from './commands/actions-item/actions-item.compo
     BrowserAnimationsModule,
     MaterialModule,
   ],
-  providers: [AppService, DatePipe],
+  providers: [
+    AppService,
+    DatePipe,
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
