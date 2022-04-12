@@ -1,17 +1,1 @@
-<!-- <mat-selection-list [multiple]="false">
-  <ng-container *ngIf="actions._type === 'link'">
-    <mat-list-option (click)="goTo(command, true)">
-      {{ command }}
-    </mat-list-option>
-  </ng-container>
-  <ng-container #name *ngIf="!actions._type">
-    <mat-list-option
-      (click)="goTo(action.key, false)"
-      *ngFor="let action of actions | keyvalue"
-    >
-      {{ action.key }}
-    </mat-list-option>
-  </ng-container>
-</mat-selection-list> -->
-
-<div [innerHTML]="saniTree"></div>
+<div id="sidebar-container" [innerHTML]="saniTree"></div>

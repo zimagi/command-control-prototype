@@ -22,10 +22,28 @@ export class ActionsItemComponent implements OnInit {
   ngOnInit(): void {
     this.buildTree(this.actions, '');
   }
+
+  scaleSideBarTree() {
+    const inc = 30;
+    // $('#main').css('width', $('#main').width() + inc * this.levels);
+    $('#sidebar-container').css(
+      'width',
+      $('#sidebar-container').width() + inc * this.levels
+    );
+  }
+
   genId() {
     return Math.floor((1 + Math.random()) * 0x10000)
       .toString(16)
       .substring(1);
+  }
+
+  convertToValidId(str: string) {
+    let result = '';
+    if (str != null || str != undefined) {
+      result = str.replace(/:/g, '-');
+    }
+    return result;
   }
 
   buildTree(actions: any, child: any) {
@@ -48,11 +66,12 @@ export class ActionsItemComponent implements OnInit {
         let obj: any = value;
         // console.log(`${key}: ${value}` + 'type: ' + obj._type);
         if (obj._type === 'link') {
+          const comm = this.command + ':' + key;
           this.tree +=
-            '<div class="border-bottom"><a onClick="goTo(\'' +
-            this.command +
-            '-' +
-            key +
+            '<div class="border-bottom"><a id="lnk-' +
+            this.convertToValidId(comm) +
+            '" onClick="goTo(\'' +
+            comm +
             '\')" class="tree-lnk">' +
             key +
             '</a></div>';
@@ -91,7 +110,11 @@ export class ActionsItemComponent implements OnInit {
       this.tree += '</div>';
     }
     this.saniTree = this.sanitizer.bypassSecurityTrustHtml(this.tree);
+    if (this.levels > 3) {
+      this.scaleSideBarTree();
+    }
   }
+
   buildChildren(treeChildren: any, parentKey: any) {
     // console.log(treeChildren);
     // Increment levels
@@ -108,13 +131,12 @@ export class ActionsItemComponent implements OnInit {
       let obj: any = value;
       // console.log(`${key}: ${value}` + ' type: ' + obj._type);
       if (obj._type === 'link') {
+        const comm = this.command + ':' + parentKey + ':' + key;
         result +=
-          '<div class="border-bottom"><a onClick="goTo(\'' +
-          this.command +
-          '-' +
-          parentKey +
-          '-' +
-          key +
+          '<div class="border-bottom"><a id="lnk-' +
+          this.convertToValidId(comm) +
+          '"  onClick="goTo(\'' +
+          comm +
           '\')" class="tree-lnk">' +
           key +
           '</a></div>';
@@ -148,7 +170,7 @@ export class ActionsItemComponent implements OnInit {
           '" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#' +
           accordionId +
           '"><div class="accordion-body">' +
-          this.buildChildren(value, parentKey + '-' + key) +
+          this.buildChildren(value, parentKey + ':' + key) +
           '</div></div></div>';
 
         result += '</div>';
@@ -158,11 +180,12 @@ export class ActionsItemComponent implements OnInit {
     // result += '</ul>';
     return result;
   }
-  goTo(action: any, noAction: boolean) {
-    setTimeout(() => {
-      $('#begin').hide();
-    }, 200);
 
-    this.router.navigate(['/commands/' + this.command + '-' + action]);
-  }
+  // goTo(action: any) {
+  //   setTimeout(() => {
+  //     $('#begin').hide();
+  //   }, 200);
+  //   console.log(action);
+  //   this.router.navigate(['/commands/' + this.command + ':' + action]);
+  // }
 }

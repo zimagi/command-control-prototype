@@ -18,7 +18,7 @@ declare const $: any;
   templateUrl: './edit-command.component.html',
   styleUrls: ['./edit-command.component.scss'],
 })
-export class EditCommandComponent implements OnInit {
+export class EditCommandComponent implements OnInit, AfterViewInit {
   allCommands: any = [];
   commandName: any = '';
   actionName: any = '';
@@ -45,11 +45,14 @@ export class EditCommandComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit() {
+    // console.log('ngAfterViewInit');
+  }
+
   formatBreadcrumbs(str: string) {
     let result = '';
-
     if (str != null || str != undefined) {
-      result = str.replace('-', '/');
+      result = str.replace(/:/g, '/');
     }
     return result;
   }
@@ -68,8 +71,12 @@ export class EditCommandComponent implements OnInit {
   }
 
   getActionDetails(obj: any) {
+    // console.log('getActionDetails');
+
     if (this.actionName === null) {
-      this.action = obj;
+      if (obj != undefined || obj != null) {
+        this.action = obj;
+      }
     } else {
       for (let [key, value] of Object.entries(obj)) {
         // console.log(key);
@@ -109,14 +116,13 @@ export class EditCommandComponent implements OnInit {
   }
 
   getCommandDetails(name: string) {
-    //console.log(name);
-    const keysArr = name.split('-');
+    // console.log('> ' + name);
+    const keysArr = name.split(':');
     const len = keysArr.length;
     let lastKey = keysArr[len - 1];
     let command: any = [];
     for (let [key, value] of Object.entries(this.allCommands[0])) {
       if (keysArr[0] == key) {
-        // console.log(value);
         command = value;
       }
     }
@@ -247,11 +253,12 @@ export class EditCommandComponent implements OnInit {
     // console.log('emit');
     // this.emitAddResponse.emit('clicked');
     let arr = this.appService.responses;
-    if (this.actionName === null) {
-      this.actionName = '';
-    } else {
-      arr.push({ action: this.commandName + ' ' + this.actionName });
-    }
+    console.log(arr);
+    // if (this.actionName === null) {
+    //   this.actionName = '';
+    // } else {
+    arr.push({ action: this.formatBreadcrumbs(this.commandName) });
+    // }
 
     this.appService.responses = arr;
     // Disable execute button

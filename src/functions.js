@@ -21,7 +21,7 @@ window.buildMobileMenu = function () {
     );
     $("#main-sidenav").appendTo("#mobile-sidenav-body");
     // Hide sidenav container
-    $("#main").hide();
+    //$("#main").hide();
 
     // Set platform header name bellow header tag
     $("#platform-name").appendTo("#mobile-platform-name .col");
@@ -69,6 +69,7 @@ function addArrayItem(id) {
     '<li class="list-group-item d-flex bd-highlight align-items-center"><input type="text" class="form-control flex-grow-1 bd-highlight" /><a href="javascript://" class="bd-highlight remove-icon" title="Remove item"><span class="sr-only">Remove</span></a></li>'
   );
 }
+
 function addObjItem(id) {
   // console.log(id);
   $("#" + id + " ul").append(
@@ -79,7 +80,11 @@ function goTo(action) {
   setTimeout(() => {
     $("#begin").hide();
   }, 200);
-  document.location.href = "../#/commands/" + action;
+  // console.log(action);
+  $(".tree-lnk").removeClass("active");
+  $("#lnk-" + action.replace(/:/g, "-")).addClass("active");
+  // document.location.href = "../#/commands";
+  document.location.href = "#/commands/" + action;
   // if (noAction === true) {
   //   this.router.navigate(['/commands/' + this.command]);
   // } else {

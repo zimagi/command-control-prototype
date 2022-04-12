@@ -7,11 +7,7 @@ const routes: Routes = [
   {
     path: 'commands',
     component: CommandsComponent,
-    children: [
-      { path: '', component: CommandsComponent },
-      { path: ':command/:action', component: EditCommandComponent },
-      { path: ':command', component: EditCommandComponent },
-    ],
+    children: [{ path: ':command', component: EditCommandComponent }],
   },
 ];
 

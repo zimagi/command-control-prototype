@@ -503,6 +503,7 @@ body {
   .tree-lnk {
     font-size: 1rem;
   }
+
   .mat-expansion-panel-body {
     padding-right: 0.6rem !important;
   }
@@ -522,7 +523,10 @@ body {
   }
   .tree-lnk:hover,
   .tree-lnk:focus {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(142, 39, 138, 0.5);
+  }
+  .tree-lnk.active {
+    background: #8e278a;
   }
   .accordion-button::after {
     background-size: 90% 90%;

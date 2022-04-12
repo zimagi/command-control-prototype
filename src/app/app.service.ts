@@ -9,16 +9,24 @@ declare let $: any;
 })
 export class AppService {
   responsesList: any[] = [];
+  handleError: any;
   constructor(
     private http: HttpClient,
-    private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
   get responses(): any[] {
     return this.responsesList;
   }
   set responses(arr: any[]) {
     this.responsesList = arr;
+  }
+  getAllCommands(): Observable<any[]> {
+    return this.http.get<any[]>('https://demo.zimagi.com:5323/').pipe(
+      tap((data) => data),
+      catchError(this.handleError)
+    );
+    // return CATEGORIES;
   }
   getCommands() {
     return [
@@ -2813,6 +2821,205 @@ export class AppService {
           lock1: {
             lock2: {
               lock3: {
+                lock4: {
+                  set: {
+                    _type: 'link',
+                    url: '/service/lock/set',
+                    action: 'post',
+                    encoding: 'application/x-www-form-urlencoded',
+                    description:
+                      'Set a service lock key Execute `service clear` to ensure a key does not exist or `service wait` to wait for a key to be set ',
+                    fields: [
+                      {
+                        name: 'verbosity',
+                        location: 'form',
+                        schema: {
+                          _type: 'integer',
+                          title: 'verbosity',
+                          description:
+                            '[@option_verbosity] verbosity level; 0=silent, 1=minimal, 2=normal, 3=verbose <2>',
+                        },
+                        tags: ['display'],
+                      },
+                      {
+                        name: 'debug',
+                        location: 'form',
+                        schema: {
+                          _type: 'boolean',
+                          title: 'debug',
+                          description:
+                            '[@option_debug] run in debug mode with error tracebacks',
+                        },
+                        tags: ['display'],
+                      },
+                      {
+                        name: 'display_width',
+                        location: 'form',
+                        schema: {
+                          _type: 'integer',
+                          title: 'display_width',
+                          description:
+                            '[@option_display_width] CLI display width <80>',
+                        },
+                        tags: ['display'],
+                      },
+                      {
+                        name: 'no_parallel',
+                        location: 'form',
+                        schema: {
+                          _type: 'boolean',
+                          title: 'no_parallel',
+                          description:
+                            '[@option_no_parallel] disable parallel processing',
+                        },
+                        tags: ['system'],
+                      },
+                      {
+                        name: 'push_queue',
+                        location: 'form',
+                        schema: {
+                          _type: 'boolean',
+                          title: 'push_queue',
+                          description:
+                            '[@option_push_queue] run command in the background and follow execution results',
+                        },
+                        tags: ['system'],
+                      },
+                      {
+                        name: 'async_exec',
+                        location: 'form',
+                        schema: {
+                          _type: 'boolean',
+                          title: 'async_exec',
+                          description:
+                            '[@option_async_exec] return immediately and let queued command execution run in background',
+                        },
+                        tags: ['system'],
+                      },
+                      {
+                        name: 'lock_id',
+                        location: 'form',
+                        schema: {
+                          _type: 'string',
+                          title: 'lock_id',
+                          description:
+                            '[@option_lock_id] command lock id to prevent simultanious duplicate execution',
+                        },
+                        tags: ['lock'],
+                      },
+                      {
+                        name: 'lock_error',
+                        location: 'form',
+                        schema: {
+                          _type: 'boolean',
+                          title: 'lock_error',
+                          description:
+                            '[@option_lock_error] raise an error and abort if commmand lock can not be established',
+                        },
+                        tags: ['lock'],
+                      },
+                      {
+                        name: 'lock_timeout',
+                        location: 'form',
+                        schema: {
+                          _type: 'integer',
+                          title: 'lock_timeout',
+                          description:
+                            '[@option_lock_timeout] command lock wait timeout in seconds <600>',
+                        },
+                        tags: ['lock'],
+                      },
+                      {
+                        name: 'lock_interval',
+                        location: 'form',
+                        schema: {
+                          _type: 'integer',
+                          title: 'lock_interval',
+                          description:
+                            '[@option_lock_interval] command lock check interval in seconds <2>',
+                        },
+                        tags: ['lock'],
+                      },
+                      {
+                        name: 'run_once',
+                        location: 'form',
+                        schema: {
+                          _type: 'boolean',
+                          title: 'run_once',
+                          description:
+                            '[@option_run_once] persist the lock id as a state flag to prevent duplicate executions',
+                        },
+                        tags: ['lock'],
+                      },
+                      {
+                        name: 'schedule',
+                        location: 'form',
+                        schema: {
+                          _type: 'string',
+                          title: 'schedule',
+                          description:
+                            "[@option_schedule] schedule in the form of timedelta '#D | #H | #M | #S', crontab 'M H Dm My Dw', or datetime 'YYYY-MM-DD HH:MM:SS'",
+                        },
+                        tags: ['schedule'],
+                      },
+                      {
+                        name: 'schedule_begin',
+                        location: 'form',
+                        schema: {
+                          _type: 'string',
+                          title: 'schedule_begin',
+                          description:
+                            "[@option_schedule_begin] date to begin processing in form of 'YYYY-MM-DD HH:MM:SS'",
+                        },
+                        tags: ['schedule'],
+                      },
+                      {
+                        name: 'schedule_end',
+                        location: 'form',
+                        schema: {
+                          _type: 'string',
+                          title: 'schedule_end',
+                          description:
+                            "[@option_schedule_end] date to end processing in form of 'YYYY-MM-DD HH:MM:SS'",
+                        },
+                        tags: ['schedule'],
+                      },
+                      {
+                        name: 'command_notify',
+                        location: 'form',
+                        schema: {
+                          _type: 'array',
+                          title: 'Comma separated command_notify',
+                          description:
+                            '[@option_command_notify] user group names to notify of command results <> (comma separated)',
+                        },
+                        tags: ['notification', 'groups'],
+                      },
+                      {
+                        name: 'command_notify_failure',
+                        location: 'form',
+                        schema: {
+                          _type: 'array',
+                          title: 'Comma separated command_notify_failure',
+                          description:
+                            '[@option_command_notify_failure] user group names to notify of command failures <> (comma separated)',
+                        },
+                        tags: ['notification', 'groups'],
+                      },
+                      {
+                        name: 'key',
+                        required: true,
+                        location: 'form',
+                        schema: {
+                          _type: 'string',
+                          title: 'key',
+                          description: 'service key',
+                        },
+                        tags: ['service_lock'],
+                      },
+                    ],
+                  },
+                },
                 set: {
                   _type: 'link',
                   url: '/service/lock/set',
