@@ -66,14 +66,22 @@ $(function () {
 function addArrayItem(id) {
   // console.log(id);
   $("#" + id + " ul").append(
-    '<li class="list-group-item d-flex bd-highlight align-items-center"><input type="text" class="form-control flex-grow-1 bd-highlight" /><a href="javascript://" class="bd-highlight remove-icon" title="Remove item"><span class="sr-only">Remove</span></a></li>'
+    '<li id="' +
+      id +
+      '-li" class="list-group-item d-flex bd-highlight align-items-center"><input type="text" class="form-control flex-grow-1 bd-highlight" /><a href="javascript://" onClick="$(\'#' +
+      id +
+      '-li\').remove()" class="bd-highlight remove-icon" title="Remove item"><span class="sr-only">Remove</span></a></li>'
   );
 }
 
 function addObjItem(id) {
   // console.log(id);
   $("#" + id + " ul").append(
-    '<li class="list-group-item d-flex bd-highlight align-items-center"><div class="col-5"><label class="form-label">Key</label><input type="text" class="form-control bd-highlight" /></div><div class="col-1 d-flex justify-content-center align-items-center"><span class="mt-4">=</span></div><div class="col-5"><label class="form-label">Value</label><input type="text" class="form-control bd-highlight" /></div><div class="col-1"><a href="javascript://" class="bd-highlight remove-icon" style="margin-top: 1.9rem !important;margin-left: 0px !important" title="Remove item"><span class="sr-only">Remove</span></a></div></li>'
+    '<li id="' +
+      id +
+      '-li" class="list-group-item d-flex bd-highlight align-items-center"><div class="col-5"><label class="form-label">Key</label><input type="text" class="form-control bd-highlight" /></div><div class="col-1 d-flex justify-content-center align-items-center"><span class="mt-4">=</span></div><div class="col-5"><label class="form-label">Value</label><input type="text" class="form-control bd-highlight" /></div><div class="col-1"><a href="javascript://" onClick="$(\'#' +
+      id +
+      '-li\').remove()" class="bd-highlight remove-icon" style="margin-top: 1.9rem !important;margin-left: 0px !important" title="Remove item"><span class="sr-only">Remove</span></a></div></li>'
   );
 }
 function goTo(action) {
