@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginComponent } from './login/login.component';
 import { MaterialModule } from './shared/material/material.module';
@@ -12,7 +13,7 @@ import { AccordionComponent } from './shared/accordion/accordion.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommandsModule } from './commands/commands.module';
 import { AppService } from './app.service';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ResponseItemComponent } from './commands/response-item/response-item.component';
 import { PreloaderComponent } from './shared/preloader/preloader.component';
 import {
@@ -21,6 +22,7 @@ import {
   LocationStrategy,
 } from '@angular/common';
 import { ActionsItemComponent } from './commands/actions-item/actions-item.component';
+import { AuthInterceptor } from './auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -38,12 +40,14 @@ import { ActionsItemComponent } from './commands/actions-item/actions-item.compo
     AppRoutingModule,
     HttpClientModule,
     CommandsModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
     MaterialModule,
   ],
   providers: [
     AppService,
     DatePipe,
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: LocationStrategy, useClass: HashLocationStrategy },
   ],
   bootstrap: [AppComponent],

@@ -42,6 +42,7 @@ export class ActionsItemComponent implements OnInit {
     let result = '';
     if (str != null || str != undefined) {
       result = str.replace(/:/g, '-');
+      return result;
     }
     return result;
   }
@@ -51,9 +52,11 @@ export class ActionsItemComponent implements OnInit {
 
     if (actions._type === 'link') {
       this.tree =
-        '<div class="border-bottom"><a href="../#/command/' +
+        '<div class="border-bottom"><a id="lnk-' +
+        this.convertToValidId(this.command) +
+        '" onClick="goTo(\'' +
         this.command +
-        '" class="tree-lnk">' +
+        '\')" class="tree-lnk">' +
         this.command +
         '</a></div>';
     } else {
@@ -180,12 +183,4 @@ export class ActionsItemComponent implements OnInit {
     // result += '</ul>';
     return result;
   }
-
-  // goTo(action: any) {
-  //   setTimeout(() => {
-  //     $('#begin').hide();
-  //   }, 200);
-  //   console.log(action);
-  //   this.router.navigate(['/commands/' + this.command + ':' + action]);
-  // }
 }

@@ -19,7 +19,7 @@ declare const $: any;
   styleUrls: ['./edit-command.component.scss'],
 })
 export class EditCommandComponent implements OnInit, AfterViewInit {
-  allCommands: any = [];
+  dataCommands: any = [];
   commandName: any = '';
   actionName: any = '';
   action: any = {};
@@ -34,15 +34,37 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.allCommands = this.appService.getCommands();
-    this.route.paramMap.subscribe((params) => {
-      this.commandName = params.get('command');
-      this.actionName = params.get('action');
+    if (this.appService.commandsList.length === 0) {
+      this.appService.getAllCommands().subscribe((data: any) => {
+        this.route.paramMap.subscribe((params) => {
+          this.commandName = params.get('command');
+          this.actionName = params.get('action');
+
+          setTimeout(() => {
+            this.resetScroll();
+          }, 100);
+        });
+        this.appService.commandsList = data;
+        this.dataCommands = this.appService.commandsList;
+
+        // console.log('---');
+        // console.log(this.dataCommands);
+        // console.log('---');
+        this.getCommandDetails(this.commandName);
+      });
+    } else {
+      this.route.paramMap.subscribe((params) => {
+        this.commandName = params.get('command');
+        this.actionName = params.get('action');
+
+        setTimeout(() => {
+          this.resetScroll();
+        }, 100);
+      });
+      this.dataCommands = this.appService.commandsList;
+
       this.getCommandDetails(this.commandName);
-      setTimeout(() => {
-        this.resetScroll();
-      }, 100);
-    });
+    }
   }
 
   ngAfterViewInit() {
@@ -71,8 +93,9 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
   }
 
   getActionDetails(obj: any) {
-    // console.log('getActionDetails');
-
+    // console.log('-- getActionDetails --');
+    // console.log(obj);
+    // console.log('-- getActionDetails --');
     if (this.actionName === null) {
       if (obj != undefined || obj != null) {
         this.action = obj;
@@ -95,7 +118,6 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
   findNestedObject(obj: any, keyToMatch = '') {
     if (this.isObject(obj)) {
       const entries = Object.entries(obj);
-
       for (let i = 0; i < entries.length; i += 1) {
         const [objectKey, objectValue] = entries[i];
         if (objectKey === keyToMatch) {
@@ -121,18 +143,24 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
     const len = keysArr.length;
     let lastKey = keysArr[len - 1];
     let command: any = [];
-    for (let [key, value] of Object.entries(this.allCommands[0])) {
+    let lastKeyParent = '';
+
+    for (let [key, value] of Object.entries(this.dataCommands)) {
       if (keysArr[0] == key) {
         command = value;
       }
     }
+    if (keysArr.length == 1) {
+      lastKey = name;
+      lastKeyParent = command;
+    } else {
+      lastKeyParent = this.findNestedObject(command, lastKey);
+    }
+
     // console.log(command);
     // console.log('last = ' + keysArr[len - 1]);
-
-    const lastKeyParent = this.findNestedObject(command, lastKey);
-    // console.log(this.findNestedObject(lastKeyParent, lastKey));
     // console.log(this.isObject(lastKeyParent));
-    if (!this.isObject(lastKeyParent)) {
+    if (!this.isObject(lastKeyParent) || keysArr.length == 1) {
       this.getActionDetails(lastKeyParent);
     } else {
       // is object array
@@ -249,17 +277,21 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
     return this._sanitizer.bypassSecurityTrustHtml(result);
   }
 
-  addResponse() {
+  executeCommand() {
     // console.log('emit');
     // this.emitAddResponse.emit('clicked');
     let arr = this.appService.responses;
-    console.log(arr);
+    let command = this.formatBreadcrumbs(this.commandName);
+    console.log(this.formatBreadcrumbs(this.commandName));
     // if (this.actionName === null) {
     //   this.actionName = '';
     // } else {
     arr.push({ action: this.formatBreadcrumbs(this.commandName) });
     // }
 
+    this.appService.executeCommand(command).subscribe((data: any) => {
+      console.log(data);
+    });
     this.appService.responses = arr;
     // Disable execute button
     $('#btn-execute').attr('disabled', true);

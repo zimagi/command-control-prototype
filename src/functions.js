@@ -91,7 +91,7 @@ function goTo(action) {
   // console.log(action);
   $(".tree-lnk").removeClass("active");
   $("#lnk-" + action.replace(/:/g, "-")).addClass("active");
-  // document.location.href = "../#/commands";
+  document.location.href = "../#/commands";
   document.location.href = "#/commands/" + action;
   // if (noAction === true) {
   //   this.router.navigate(['/commands/' + this.command]);

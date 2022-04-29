@@ -3,7 +3,12 @@
     <div class="col"></div>
     <div class="col col-md-4 col-sm-12 pt-5">
       <div class="card">
-        <form class="form-signin pt-5">
+        <form
+          [formGroup]="loginForm"
+          (ngSubmit)="onSubmit()"
+          class="form-signin pt-5"
+          novalidate
+        >
           <img
             class="mb-4"
             src="/assets/images/logo-zimagi.svg"
@@ -13,40 +18,39 @@
           <h1 class="h3 mb-3 font-weight-normal text-primary">
             Command Interface
           </h1>
-          <!-- <label for="inputEmail" class="sr-only">Email address</label>
-                <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus=""> -->
-          <!-- <label for="inputPassword" class="sr-only">Password</label>
-                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required=""> -->
           <div class="col-12">
             <mat-form-field appearance="fill">
               <mat-label>URL</mat-label>
-              <input matInput />
+              <input matInput formControlName="url" />
+              <mat-error *ngIf="errorHandling('url', 'required')"
+                >Required</mat-error
+              >
             </mat-form-field>
           </div>
           <div class="col-12">
             <mat-form-field appearance="fill">
               <mat-label>USER</mat-label>
-              <input matInput />
+              <input matInput formControlName="user" />
+              <mat-error *ngIf="errorHandling('user', 'required')"
+                >required</mat-error
+              >
             </mat-form-field>
           </div>
           <div class="col-12">
             <mat-form-field appearance="fill">
               <mat-label>TOKEN</mat-label>
-              <input matInput />
+              <input matInput formControlName="token" />
+              <mat-error *ngIf="errorHandling('token', 'required')"
+                >Req</mat-error
+              >
             </mat-form-field>
           </div>
 
-          <!-- <div class="checkbox m-3">
-            <label>
-              <input type="checkbox" value="remember-me" /> Remember me
-            </label>
-          </div> -->
-          <!-- <button mat-raised-button color="primary">Primary</button> -->
           <button
             mat-raised-button
             class="btn btn-lg btn-primary btn-block"
             type="submit"
-            [routerLink]="['/commands']"
+            [disabled]="loading"
           >
             Sign in
           </button>

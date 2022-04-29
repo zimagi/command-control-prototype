@@ -6,6 +6,8 @@ import { EditCommandComponent } from './edit-command/edit-command.component';
 import { MaterialModule } from '../shared/material/material.module';
 import { SafeHtmlPipe } from '../safe-html.pipe';
 import { PreloaderComponent } from '../shared/preloader/preloader.component';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from '../auth.interceptor';
 
 @NgModule({
   declarations: [EditCommandComponent, SafeHtmlPipe],

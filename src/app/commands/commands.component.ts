@@ -18,15 +18,11 @@ export class CommandsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log("1. Called jquery: $.get('https://demo.zimagi.com:5123/')");
-    $.get('https://demo.zimagi.com:5123/', function (data: any) {
-      console.log(data);
+    this.appService.getAllCommands().subscribe((data: any) => {
+      this.appService.commandsList = data;
+      this.dataCommands = this.appService.commandsList;
     });
-    console.log('2. Called Angular Service Observable');
-    this.appService.getAllCommands().subscribe((data) => {
-      console.log(data);
-    });
-    this.dataCommands = this.appService.getCommands();
+
     $('#main, #response-panel').css('height', window.innerHeight - 80 + 'px');
     $(window).resize(function () {
       $('#main, #response-panel').css('height', window.innerHeight - 80 + 'px');
