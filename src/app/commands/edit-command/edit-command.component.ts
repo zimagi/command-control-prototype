@@ -12,7 +12,15 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { PipeTransform, Pipe } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppService } from 'src/app/app.service';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, tap, delay } from 'rxjs/operators';
 declare const $: any;
+declare const disableInptEnterKey: any;
 @Component({
   selector: 'app-edit-command',
   templateUrl: './edit-command.component.html',
@@ -24,16 +32,20 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
   actionName: any = '';
   action: any = {};
   acceptedKeys: any[] = ['url'];
+  api: any;
+  authHead = 'Token admin uy5c8xiahf93j2pl8s00e6nb32h87dn3';
   @Output() emitAddResponse: EventEmitter<any> = new EventEmitter();
 
   constructor(
     private _sanitizer: DomSanitizer,
     private route: ActivatedRoute,
     private router: Router,
-    private appService: AppService
+    private appService: AppService,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
+    this.api = this.appService.url;
     if (this.appService.commandsList.length === 0) {
       this.appService.getAllCommands().subscribe((data: any) => {
         this.route.paramMap.subscribe((params) => {
@@ -68,7 +80,19 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // console.log('ngAfterViewInit');
+    // Sort fields by required
+    setTimeout(() => {
+      $('#inpt-fields').html(
+        $('#inpt-fields .div-req').sort(this.appService.sortByRequired)
+      );
+      $('#frm-command').attr('onsubmit', 'return false;');
+      disableInptEnterKey();
+      // $('.numeric').inputFilter(function (value: any) {
+      //   console.log(value);
+      //   // return /(?<=^| )\d+(\.\d+)?(?=$| )|(?<=^| )\.\d+(?=$| )/.test(value); // Allow digits only, using a RegExp
+      //   return /^\d*$/.test(value); // Allow digits only, using a RegExp
+      // }, 'Only digits allowed');
+    }, 500);
   }
 
   formatBreadcrumbs(str: string) {
@@ -208,17 +232,25 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
     return '';
   }
 
-  returnInputHtml(name: any, type: any, title: any, desc: any) {
+  returnInputHtml(name: any, type: any, title: any, desc: any, req: boolean) {
     let result: string = '';
     // let n: number = Math.floor(Math.random() * 500) + 1;
     let valueDefault: any = this.getDefaultValue(desc);
     let datePlaceholder: any = this.getDatePlaceholder(desc);
+    let required = req ? '<span class="text-danger">*</span>' : '';
+    let requiredBadge = req
+      ? ' <span class="badge bg-danger d-inline-block text-uppercase">required</span>'
+      : '';
+    let requiredInp = req ? 'required' : '';
     switch (type) {
       case 'integer':
         result =
           '<div class="pb-2">' +
           desc +
-          '</div><input type="text" class="form-control" value="' +
+          required +
+          '</div><input name="' +
+          name +
+          '" type="text" class="form-control numeric" onkeypress="return isNumberKey(event,this.id)"  value="' +
           valueDefault +
           '"/><div><span class="badge bg-secondary d-inline-block text-uppercase">integer</span></div>';
         break;
@@ -226,41 +258,59 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
         result =
           '<div class="pb-2">' +
           desc +
-          '</div><input type="text" class="form-control" value="" placeholder="' +
+          required +
+          '</div><input name="' +
+          name +
+          '" type="text" class="form-control" value="" placeholder="' +
           datePlaceholder +
-          '"/><div><span class="badge bg-secondary d-inline-block text-uppercase">string</span></div>';
+          '" ' +
+          requiredInp +
+          '/><div><span class="badge bg-secondary d-inline-block text-uppercase">string</span>' +
+          requiredBadge +
+          '</div>';
         break;
       case 'array':
         result =
           '<div class="pb-2">' +
           desc.replace('(comma separated)', '') +
+          required +
           '</div><div id="' +
           name +
-          '_arr" class="col"><ul class="list-group"><li class="list-group-item d-flex bd-highlight align-items-center"><input type="text" class="form-control flex-grow-1 bd-highlight" /><span class="d-inline-block" style="width: 40px;"></span></li></ul><a href="javascript://" onClick="addArrayItem(\'' +
+          '_arr" class="col"><ul class="list-group"><li class="list-group-item d-flex bd-highlight align-items-center"><input name="' +
+          name +
+          '" type="text" class="form-control flex-grow-1 bd-highlight" /><span class="d-inline-block" style="width: 40px;"></span></li></ul><a href="javascript://" onClick="addArrayItem(\'' +
           name.trim() +
-          '_arr\')" class="btn btn-primary btn-sm my-3">+ Add</a></div>';
+          "_arr', '" +
+          name.trim() +
+          '\')" class="btn btn-primary btn-sm my-3">+ Add</a></div>';
 
         break;
       case 'object':
         result =
           '<div class="pb-2">' +
           desc +
+          required +
           '</div><div id="' +
           name +
-          '_obj" class="col"><ul class="list-group"><li class="list-group-item d-flex bd-highlight align-items-center"><div class="col-5"><label class="form-label">Key</label><input type="text" class="form-control bd-highlight" /></div><div class="col-1 d-flex justify-content-center align-items-center"><span class="mt-4">=</span></div><div class="col-5"><label class="form-label">Value</label><input type="text" class="form-control bd-highlight" /></div><div class="col-1"><span class="d-inline-block" style="width: 40px;"></span></div></li></ul><a href="javascript://" onClick="addObjItem(\'' +
+          '_obj" class="col"><ul class="list-group"><li class="list-group-item d-flex bd-highlight align-items-center"><div class="col-5"><label class="form-label">Key</label><input type="text" class="form-control bd-highlight" /></div><div class="col-1 d-flex justify-content-center align-items-center"><span class="mt-4">=</span></div><div class="col-5"><label class="form-label">Value</label><input name="' +
+          name +
+          '" type="text" class="form-control bd-highlight" /></div><div class="col-1"><span class="d-inline-block" style="width: 40px;"></span></div></li></ul><a href="javascript://" onClick="addObjItem(\'' +
           name.trim() +
-          '_obj\')" class="btn btn-primary btn-sm my-3">+ Add</a></div>';
+          "_obj', '" +
+          name.trim() +
+          '\')" class="btn btn-primary btn-sm my-3">+ Add</a></div>';
         break;
       case 'boolean':
         result =
           '<div class="pb-2">' +
           desc +
+          required +
           '</div><div class="form-check"><input class="form-check-input" type="radio" checked name="' +
-          title +
+          name +
           '"><label class="form-check-label" for="radio1-' +
           title +
           '">false</label></div><div class="form-check"><input class="form-check-input" type="radio" name="' +
-          title +
+          name +
           '" ><label class="form-check-label" for="radio2-' +
           title +
           '">true</label></div>';
@@ -278,21 +328,72 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
   }
 
   executeCommand() {
-    // console.log('emit');
-    // this.emitAddResponse.emit('clicked');
+    const dataArr = $('#frm-command').serialize();
+    let frmData = dataArr.split('&');
+    for (let item of frmData) {
+      console.log(item);
+    }
+
+    return false;
+
+    let intArr: any;
     let arr = this.appService.responses;
     let command = this.formatBreadcrumbs(this.commandName);
-    console.log(this.formatBreadcrumbs(this.commandName));
+    let dataResponse: any;
+    // console.log(this.formatBreadcrumbs(this.commandName));
     // if (this.actionName === null) {
     //   this.actionName = '';
     // } else {
     arr.push({ action: this.formatBreadcrumbs(this.commandName) });
-    // }
 
-    this.appService.executeCommand(command).subscribe((data: any) => {
-      console.log(data);
-    });
     this.appService.responses = arr;
+    // console.log(this.appService.responses);
+    // }
+    // console.log('https://demo.zimagi.com:5123/' + command);
+    // $.ajax({
+    //   method: 'POST',
+    //   url: 'https://demo.zimagi.com:5123/' + command,
+    //   beforeSend: function (xhr: any) {
+    //     xhr.setRequestHeader(
+    //       'Authorization',
+    //       'Token admin uy5c8xiahf93j2pl8s00e6nb32h87dn3'
+    //     );
+    //   },
+    //   processData: true,
+    //   complete: function (msg: any) {
+    //     dataResponse = msg.responseText;
+    //   },
+    // });
+    // intArr = setInterval(() => {
+    //   if (dataResponse != undefined) {
+    //     clearInterval(intArr);
+    //     $('#btn-execute').attr('disabled', true);
+    //     $('#btn-execute').css('opacity', '.5');
+    //     console.log(dataResponse);
+    //   }
+    // }, 500);
+
+    // console.log('----');
+    // console.log(arr);
+    // console.log('----');
+    // return;
+    // this.http
+    //   .post<any[]>(
+    //     this.api + command,
+    //     {},
+    //     {
+    //       headers: new HttpHeaders({
+    //         Authorization: this.authHead,
+    //       }),
+    //     }
+    //   )
+    //   .subscribe((data: any) => {
+    //     console.log(data);
+    //   });
+    // this.appService.executeCommand(command).subscribe((data: any) => {
+    //   console.log(data);
+    // });
+    //this.appService.responses = arr;
     // Disable execute button
     $('#btn-execute').attr('disabled', true);
     $('#btn-execute').css('opacity', '.5');
