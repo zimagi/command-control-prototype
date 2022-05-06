@@ -40,6 +40,11 @@ window.buildMobileMenu = function () {
     $("#main").show();
   }
 };
+function getUID() {
+  return Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1);
+}
 $(function () {
   $('[data-toggle="popover"]').popover();
   $(window).on("resize", function (e) {
@@ -63,23 +68,32 @@ $(function () {
   });
 });
 
-function addArrayItem(id) {
+function addArrayItem(id, inpt) {
   // console.log(id);
+  var uId = getUID();
   $("#" + id + " ul").append(
     '<li id="' +
       id +
-      '-li" class="list-group-item d-flex bd-highlight align-items-center"><input type="text" class="form-control flex-grow-1 bd-highlight" /><a href="javascript://" onClick="$(\'#' +
+      '-li" class="list-group-item d-flex bd-highlight align-items-center"><input name="' +
+      inpt +
+      "-" +
+      uId +
+      '"  type="text" class="form-control flex-grow-1 bd-highlight" /><a href="javascript://" onClick="$(\'#' +
       id +
       '-li\').remove()" class="bd-highlight remove-icon" title="Remove item"><span class="sr-only">Remove</span></a></li>'
   );
 }
 
-function addObjItem(id) {
-  // console.log(id);
+function addObjItem(id, inpt) {
+  var uId = getUID();
   $("#" + id + " ul").append(
     '<li id="' +
       id +
-      '-li" class="list-group-item d-flex bd-highlight align-items-center"><div class="col-5"><label class="form-label">Key</label><input type="text" class="form-control bd-highlight" /></div><div class="col-1 d-flex justify-content-center align-items-center"><span class="mt-4">=</span></div><div class="col-5"><label class="form-label">Value</label><input type="text" class="form-control bd-highlight" /></div><div class="col-1"><a href="javascript://" onClick="$(\'#' +
+      '-li" class="list-group-item d-flex bd-highlight align-items-center"><div class="col-5"><label class="form-label">Key</label><input name="' +
+      inpt +
+      "-" +
+      uId +
+      '" type="text" class="form-control bd-highlight" /></div><div class="col-1 d-flex justify-content-center align-items-center"><span class="mt-4">=</span></div><div class="col-5"><label class="form-label">Value</label><input type="text" class="form-control bd-highlight" /></div><div class="col-1"><a href="javascript://" onClick="$(\'#' +
       id +
       '-li\').remove()" class="bd-highlight remove-icon" style="margin-top: 1.9rem !important;margin-left: 0px !important" title="Remove item"><span class="sr-only">Remove</span></a></div></li>'
   );
@@ -98,4 +112,73 @@ function goTo(action) {
   // } else {
   //   this.router.navigate(['/commands/' + this.command + '/' + action]);
   // }
+}
+function sortByRequired(a, b) {
+  const startA = parseInt($(a).data("required"));
+  const startB = parseInt($(b).data("required"));
+  return startA - startB;
+}
+
+// Numeric input fields
+// Restricts input for the set of matched elements to the given inputFilter function.
+// (function ($) {
+//   $.fn.inputFilter = function (callback, errMsg) {
+//     return this.on(
+//       "input keydown keyup mousedown mouseup select contextmenu drop focusout",
+//       function (e) {
+//         if (callback(this.value)) {
+//           // Accepted value
+//           if (["keydown", "mousedown", "focusout"].indexOf(e.type) >= 0) {
+//             $(this).removeClass("is-invalid");
+//             this.setCustomValidity("");
+//           }
+//           this.oldValue = this.value;
+//           this.oldSelectionStart = this.selectionStart;
+//           this.oldSelectionEnd = this.selectionEnd;
+//         } else if (this.hasOwnProperty("oldValue")) {
+//           // Rejected value - restore the previous one
+//           $(this).addClass("is-invalid");
+//           this.setCustomValidity(errMsg);
+//           this.reportValidity();
+//           this.value = this.oldValue;
+//           this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+//         } else {
+//           // Rejected value - nothing to restore
+//           this.value = "";
+//         }
+//       }
+//     );
+//   };
+// })(jQuery);
+
+function isNumberKey(evt, id) {
+  try {
+    var charCode = evt.which ? evt.which : event.keyCode;
+    if (charCode == 46) {
+      var txt = document.getElementById(id).value;
+      if (!(txt.indexOf(".") > -1)) {
+        return true;
+      }
+    }
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) return false;
+
+    return true;
+  } catch (w) {
+    alert(w);
+  }
+}
+
+function disableInptEnterKey() {
+  $("input[type='text']").keypress(function (e) {
+    var key = e.which;
+    if (key == 13) {
+      // the enter key code
+      console.log("pressed enter");
+      return false;
+    }
+  });
+  $("#frm-command").submit(function (event) {
+    alert("Handler for .submit() called.");
+    event.preventDefault();
+  });
 }

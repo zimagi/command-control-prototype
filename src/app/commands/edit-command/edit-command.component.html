@@ -1,92 +1,103 @@
 <div class="row d-flex align-items-end flex-column">
-  <div id="scroll-win" class="scroll bd-highlight">
-    <div class="col-12">
-      <nav aria-label="breadcrumb" class="border-bottom border-secondary mb-3">
-        <ol class="breadcrumb">
-          <li
-            class="breadcrumb-item"
-            [innerHTML]="formatBreadcrumbs(commandName)"
-          ></li>
-        </ol>
-      </nav>
-    </div>
+  <form id="frm-command">
+    <div id="scroll-win" class="scroll bd-highlight">
+      <div class="col-12">
+        <nav
+          aria-label="breadcrumb"
+          class="border-bottom border-secondary mb-3"
+        >
+          <ol class="breadcrumb">
+            <li
+              class="breadcrumb-item"
+              [innerHTML]="formatBreadcrumbs(commandName)"
+            ></li>
+          </ol>
+        </nav>
+      </div>
 
-    <div class="col-12">
-      <h2>{{ actionName }}</h2>
-      <strong class="badge bg-secondary text-lg d-inline-block mb-2"
-        >description</strong
-      >
-      <p>
-        {{ action.description }}
-      </p>
-      <!-- <div *ngFor="let key of obj">
+      <div class="col-12">
+        <h2>{{ actionName }}</h2>
+        <strong class="badge bg-secondary text-lg d-inline-block mb-2"
+          >description</strong
+        >
+        <p>
+          {{ action.description }}
+        </p>
+        <!-- <div *ngFor="let key of obj">
         {{ key }}
       </div> -->
-      <div class="row">
-        <div *ngFor="let item of action | keyvalue">
-          <!-- {{ item.key }}:{{ item.value }} -->
-          <div class="col" *ngIf="keyInArray(item.key)">
-            <h4 class="text-primary">
-              <strong class="badge bg-secondary text-lg">{{ item.key }}</strong>
-            </h4>
-            <p>{{ item.value }}</p>
+        <div class="row">
+          <div *ngFor="let item of action | keyvalue">
+            <!-- {{ item.key }}:{{ item.value }} -->
+            <div class="col" *ngIf="keyInArray(item.key)">
+              <h4 class="text-primary">
+                <strong class="badge bg-secondary text-lg">{{
+                  item.key
+                }}</strong>
+              </h4>
+              <p>{{ item.value }}</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <!-- Fields -->
-    <div class="col-12 py-3 mt-3 border-top border-primary">
-      <h3>
-        <!-- <mat-icon class="text-primary mr-2 float-left">dns</mat-icon> -->
-        <strong class="text-primary">Fields</strong>
-      </h3>
-      <div class="row">
-        <div class="col-12 mb-2" *ngFor="let item of action.fields">
-          <div class="card">
-            <div class="card-body">
-              <div class="mb-3 row mt-3">
-                <div class="field-container">
-                  <div class="pl-5">
-                    <label for="name" class="col-form-label"
-                      ><strong>
-                        {{ item.name }}
-                      </strong></label
-                    >
+      <!-- Fields -->
+      <div class="col-12 py-3 mt-3 border-top border-primary">
+        <h3>
+          <!-- <mat-icon class="text-primary mr-2 float-left">dns</mat-icon> -->
+          <strong class="text-primary">Fields</strong>
+        </h3>
+        <div id="inpt-fields" class="row">
+          <div
+            class="col-12 mb-2 div-req"
+            [attr.data-required]="item.required ? 'true' : 'false'"
+            *ngFor="let item of action.fields"
+          >
+            <div class="card">
+              <div class="card-body">
+                <div class="mb-3 row mt-3">
+                  <div class="field-container">
+                    <div class="pl-5">
+                      <label for="name" class="col-form-label"
+                        ><strong>
+                          {{ item.name }}
+                        </strong></label
+                      >
+                    </div>
+                    <div
+                      class="pl-5 col-md-6"
+                      [innerHTML]="
+                        returnInputHtml(
+                          item.name,
+                          item.schema._type,
+                          item.schema.title,
+                          item.schema.description,
+                          item.required
+                        )
+                      "
+                    ></div>
                   </div>
-                  <div
-                    class="pl-5 col-md-6"
-                    [innerHTML]="
-                      returnInputHtml(
-                        item.name,
-                        item.schema._type,
-                        item.schema.title,
-                        item.schema.description
-                      )
-                    "
-                  ></div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- <mat-accordion>
+            <!-- <mat-accordion>
             <mat-expansion-panel hideToggle>
               <mat-expansion-panel-header>
                 <mat-panel-title>
                   {{ item.name }}
                 </mat-panel-title>
               </mat-expansion-panel-header> -->
-          <!-- <ng-container *ngFor="let ele of item | keyvalue"> -->
-          <!-- <ng-container *ngIf="ele.key == 'schema'"> -->
-          <!-- <div class="mb-3 row mt-3">
+            <!-- <ng-container *ngFor="let ele of item | keyvalue"> -->
+            <!-- <ng-container *ngIf="ele.key == 'schema'"> -->
+            <!-- <div class="mb-3 row mt-3">
 
                 <div
                   class="pl-5 col-sm-6"
                   [innerHTML]="returnInputHtml(item.schema._type)"
                 ></div>
               </div> -->
-          <!-- </ng-container> -->
-          <!-- <ng-container *ngIf="ele.key == 'schema'">
+            <!-- </ng-container> -->
+            <!-- <ng-container *ngIf="ele.key == 'schema'">
                   <div class="py-3 row my-3 border-top border-bottom">
                     <label
                       for="name"
@@ -99,25 +110,26 @@
                     ></div>
                   </div>
                 </ng-container> -->
-          <!-- </ng-container> -->
-          <!-- </mat-expansion-panel>
+            <!-- </ng-container> -->
+            <!-- </mat-expansion-panel>
           </mat-accordion> -->
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div
-    id="btn-container"
-    class="mt-auto bd-highlight pt-4 border-top border-secondary"
-  >
-    <button
-      id="btn-execute"
-      mat-raised-button
-      color="primary"
-      class="btn-lg"
-      (click)="executeCommand()"
+    <div
+      id="btn-container"
+      class="mt-auto bd-highlight pt-4 border-top border-secondary"
     >
-      Execute
-    </button>
-  </div>
+      <a
+        id="btn-execute"
+        mat-raised-button
+        color="primary"
+        class="btn-lg btn-primary"
+        (click)="executeCommand()"
+      >
+        Execute
+      </a>
+    </div>
+  </form>
 </div>

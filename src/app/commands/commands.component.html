@@ -39,7 +39,11 @@
         </div>
       </div>
     </div>
-    <div id="response-panel" class="col-4 p-4 scroll">
+    <div
+      id="response-panel"
+      class="col-4 p-4 scroll"
+      style="overflow-x: hidden !important"
+    >
       <div [hidden]="responsesObj.length == 0" class="row border-bottom pb-0">
         <div class="col-md-1 pr-0">
           <mat-icon class="text-primary">comment_alt_text</mat-icon>
@@ -48,9 +52,11 @@
           <h4>Response</h4>
         </div>
       </div>
+
       <div id="response-container" class="pt-3">
         <app-response-item
           [action]="response.action"
+          [loader]="true"
           *ngFor="let response of responsesObj"
         ></app-response-item>
       </div>

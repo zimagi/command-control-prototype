@@ -4,12 +4,21 @@
   >
   <app-preloader class="m-1 ml-2" [hidden]="!loader"></app-preloader>
 </div>
-
+<div [hidden]="data.length == 0">
+  {{ formatedDate }} {{ myDate | date: "HH:MM:SS" }}
+</div>
 <div
-  [hidden]="result"
-  class="border-top result-item mt-1 py-1"
+  [hidden]="data.length == 0"
+  class="result-item mt-1 py-1"
   [ngClass]="defaultColor == true ? '' : 'text-success'"
+  *ngFor="let item of data"
 >
-  {{ formatedDate }} {{ myDate | date: "HH:MM:SS" }} <br />
-  <strong>user list</strong>: 20220318224555a800x
+  <span *ngIf="item.type === 'InfoMessage'">{{ item.message }}</span>
+  <span *ngIf="item.type === 'DataMessage'">
+    <span class="d-block">MESSAGE: {{ item.message }}</span>
+    <span class="d-block">NAME: {{ item.name }}</span>
+    <span class="d-block">DATA: {{ item.data }}</span>
+  </span>
+
+  <!-- <strong>user list</strong>: 20220318224555a800x -->
 </div>

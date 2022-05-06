@@ -10,7 +10,7 @@ declare const $: any;
 })
 export class CommandsComponent implements OnInit {
   dataCommands: any[] = [];
-  responsesObj: any;
+  responsesObj: any[] = [];
   constructor(
     private router: Router,
     private appService: AppService,
@@ -18,6 +18,8 @@ export class CommandsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Get responses
+    this.responsesObj = this.appService.responses;
     this.appService.getAllCommands().subscribe((data: any) => {
       this.appService.commandsList = data;
       this.dataCommands = this.appService.commandsList;
@@ -27,8 +29,6 @@ export class CommandsComponent implements OnInit {
     $(window).resize(function () {
       $('#main, #response-panel').css('height', window.innerHeight - 80 + 'px');
     });
-    // Get responses
-    this.responsesObj = this.appService.responses;
   }
 
   buildOptions(command: any, actions: any) {

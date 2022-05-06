@@ -31,6 +31,7 @@ export class AppService {
     private route: ActivatedRoute,
     private router: Router
   ) {}
+
   get commandsList(): any[] {
     return this._commandsList;
   }
@@ -77,16 +78,34 @@ export class AppService {
   }
   executeCommand(command: any): Observable<any[]> {
     this.url = 'https://demo.zimagi.com:5123/';
+    console.log(this.url + command);
+    const body = JSON.stringify(command);
     return this.http
-      .post<any[]>(this.url + command, {
-        headers: new HttpHeaders({
-          Authorization: this.authHead,
-        }),
-      })
+      .post<any[]>(
+        this.url + command,
+        {},
+        {
+          headers: new HttpHeaders({
+            Authorization: this.authHead,
+          }),
+        }
+      )
       .pipe(
         tap((data) => data),
         catchError(this.handleError)
       );
+  }
+  sortByRequired(a: any, b: any) {
+    var an = a.getAttribute('data-required'),
+      bn = b.getAttribute('data-required');
+
+    if (an < bn) {
+      return 1;
+    }
+    if (an > bn) {
+      return -1;
+    }
+    return 0;
   }
   getCommands() {
     // Sample data

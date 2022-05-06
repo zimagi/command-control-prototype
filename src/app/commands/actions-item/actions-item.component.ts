@@ -121,7 +121,7 @@ export class ActionsItemComponent implements OnInit {
   buildChildren(treeChildren: any, parentKey: any) {
     // console.log(treeChildren);
     // Increment levels
-    this.levels++;
+    // this.levels++;
     let result = '';
     let accordionId = 'acc-' + this.genId();
     let c = 1;
