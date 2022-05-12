@@ -1,0 +1,124 @@
+<div class="row d-flex align-items-end flex-column">
+  <div id="frm-command">
+    <form (ngSubmit)="onSubmit()" [formGroup]="form">
+      <div id="scroll-win" class="scroll bd-highlight">
+        <div class="col-12">
+          <nav
+            aria-label="breadcrumb"
+            class="border-bottom border-secondary mb-3"
+          >
+            <ol class="breadcrumb">
+              <li
+                class="breadcrumb-item"
+                [innerHTML]="formatBreadcrumbs(commandName)"
+              ></li>
+            </ol>
+          </nav>
+        </div>
+
+        <div class="col-12">
+          <h2>{{ actionName }}</h2>
+          <strong class="badge bg-secondary text-lg d-inline-block mb-2"
+            >description</strong
+          >
+          <p>
+            {{ action.description }}
+          </p>
+
+          <div class="row">
+            <div *ngFor="let item of action | keyvalue">
+              <div class="col" *ngIf="keyInArray(item.key)">
+                <h4 class="text-primary">
+                  <strong class="badge bg-secondary text-lg">{{
+                    item.key
+                  }}</strong>
+                </h4>
+                <p>{{ item.value }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Fields -->
+        <div class="col-12 py-3 mt-3 border-top border-primary">
+          <h3>
+            <strong class="text-primary">Fields</strong>
+          </h3>
+          <div id="inpt-fields" class="row">
+            <div *ngFor="let formField of data" class="form-group">
+              <!-- <app-dynamic-form-input
+                [input]="formField"
+                [form]="form"
+              ></app-dynamic-form-input> -->
+            </div>
+            <!-- <div class="col-12 mb-2 div-req" [attr.data-required]="item.required ? 'true' : 'false'"
+              *ngFor="let item of action.fields">
+              <div class="card">
+              <div class="card-body">
+                <div class="mb-3 row mt-3">
+                  <div class="field-container">
+                    <div class="pl-5">
+                      <label for="name" class="col-form-label"
+                        ><strong>
+                          {{ item.name }}
+                        </strong></label
+                      >
+                    </div>
+
+                    <div
+                      class="pl-5 col-md-6"
+                      [innerHTML]="
+                        returnInputHtml(
+                          item.name,
+                          item.schema._type,
+                          item.schema.title,
+                          item.schema.description,
+                          item.required
+                        )
+                      "
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div> -->
+          </div>
+        </div>
+      </div>
+      <div
+        id="btn-container"
+        class="mt-auto bd-highlight pt-4 border-top border-secondary"
+      >
+        <div class="form-group">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="form.invalid"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div>
+  <form (ngSubmit)="onSubmit()" [formGroup]="form">
+    <div *ngFor="let formField of data" class="form-group">
+      <!-- <app-dynamic-form-input
+        [input]="formField"
+        [form]="form"
+      ></app-dynamic-form-input> -->
+    </div>
+
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
+        Save
+      </button>
+    </div>
+  </form>
+
+  <div *ngIf="payLoad" class="form-group">
+    <strong>Here's the payload</strong><br />{{ payLoad }}
+  </div>
+</div>

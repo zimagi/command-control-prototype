@@ -1,0 +1,33 @@
+<div [id]="name + '_arr'" class="col">
+  <ul class="list-group arr-{{ name }}">
+    <li
+      *ngFor="let input of list"
+      class="list-group-item d-flex bd-highlight align-items-center"
+    >
+      <input
+        [id]="input.name"
+        [name]="input.name"
+        type="text"
+        class="form-control flex-grow-1 bd-highlight arr-inpt"
+      />
+      <span
+        *ngIf="initialInpt == input.name"
+        class="d-inline-block"
+        style="width: 40px"
+      ></span>
+      <a
+        *ngIf="initialInpt != input.name"
+        (click)="removeInput(input.name)"
+        class="bd-highlight remove-icon"
+        title="Remove item"
+        ><span class="sr-only">Remove</span></a
+      >
+    </li>
+  </ul>
+  <a
+    href="javascript://"
+    (click)="addInput()"
+    class="btn btn-primary btn-sm my-3"
+    >+ Add</a
+  >
+</div>

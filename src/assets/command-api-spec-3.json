@@ -33353,7 +33353,7 @@
               "schema": {
                   "_type": "integer",
                   "title": "lock_interval",
-                  "description": "[@option_lock_interval] command lock check interval in seconds <2>"
+                  "description": "[@option_lock_interval] command lock interval in seconds <2>"
               },
               "tags": [
                   "lock"

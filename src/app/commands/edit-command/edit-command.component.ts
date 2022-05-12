@@ -21,6 +21,9 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, tap, delay } from 'rxjs/operators';
 declare const $: any;
 declare const disableInptEnterKey: any;
+declare const getFormData: any;
+declare const setFormData: any;
+declare const alert: any;
 @Component({
   selector: 'app-edit-command',
   templateUrl: './edit-command.component.html',
@@ -85,13 +88,7 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
       $('#inpt-fields').html(
         $('#inpt-fields .div-req').sort(this.appService.sortByRequired)
       );
-      $('#frm-command').attr('onsubmit', 'return false;');
       disableInptEnterKey();
-      // $('.numeric').inputFilter(function (value: any) {
-      //   console.log(value);
-      //   // return /(?<=^| )\d+(\.\d+)?(?=$| )|(?<=^| )\.\d+(?=$| )/.test(value); // Allow digits only, using a RegExp
-      //   return /^\d*$/.test(value); // Allow digits only, using a RegExp
-      // }, 'Only digits allowed');
     }, 500);
   }
 
@@ -248,7 +245,9 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
           '<div class="pb-2">' +
           desc +
           required +
-          '</div><input name="' +
+          '</div><input id="' +
+          name +
+          '" name="' +
           name +
           '" type="text" class="form-control numeric" onkeypress="return isNumberKey(event,this.id)"  value="' +
           valueDefault +
@@ -259,7 +258,9 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
           '<div class="pb-2">' +
           desc +
           required +
-          '</div><input name="' +
+          '</div><input id="' +
+          name +
+          '" name="' +
           name +
           '" type="text" class="form-control" value="" placeholder="' +
           datePlaceholder +
@@ -276,9 +277,13 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
           required +
           '</div><div id="' +
           name +
-          '_arr" class="col"><ul class="list-group"><li class="list-group-item d-flex bd-highlight align-items-center"><input name="' +
+          '_arr" class="col"><ul class="list-group arr-' +
           name +
-          '" type="text" class="form-control flex-grow-1 bd-highlight" /><span class="d-inline-block" style="width: 40px;"></span></li></ul><a href="javascript://" onClick="addArrayItem(\'' +
+          '"><li class="list-group-item d-flex bd-highlight align-items-center"><input id="' +
+          name +
+          '" name="' +
+          name +
+          '" type="text" class="form-control flex-grow-1 bd-highlight arr-inpt" /><span class="d-inline-block" style="width: 40px;"></span></li></ul><a href="javascript://" onClick="addArrayItem(\'' +
           name.trim() +
           "_arr', '" +
           name.trim() +
@@ -292,9 +297,13 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
           required +
           '</div><div id="' +
           name +
-          '_obj" class="col"><ul class="list-group"><li class="list-group-item d-flex bd-highlight align-items-center"><div class="col-5"><label class="form-label">Key</label><input type="text" class="form-control bd-highlight" /></div><div class="col-1 d-flex justify-content-center align-items-center"><span class="mt-4">=</span></div><div class="col-5"><label class="form-label">Value</label><input name="' +
+          '_obj" class="col"><ul class="list-group obj-' +
           name +
-          '" type="text" class="form-control bd-highlight" /></div><div class="col-1"><span class="d-inline-block" style="width: 40px;"></span></div></li></ul><a href="javascript://" onClick="addObjItem(\'' +
+          '"><li class="list-group-item d-flex bd-highlight align-items-center"><div class="col-5"><label class="form-label">Key</label><input type="text" name="key-' +
+          name +
+          '" class="form-control bd-highlight obj-key obj-inpt" /></div><div class="col-1 d-flex justify-content-center align-items-center"><span class="mt-4">=</span></div><div class="col-5"><label class="form-label">Value</label><input name="' +
+          name +
+          '" type="text" class="form-control bd-highlight obj-value obj-inpt" /></div><div class="col-1"><span class="d-inline-block" style="width: 40px;"></span></div></li></ul><a href="javascript://" onClick="addObjItem(\'' +
           name.trim() +
           "_obj', '" +
           name.trim() +
@@ -305,11 +314,15 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
           '<div class="pb-2">' +
           desc +
           required +
-          '</div><div class="form-check"><input class="form-check-input" type="radio" checked name="' +
+          '</div><div class="form-check"><input class="form-check-input" id="radio1-' +
+          name +
+          '" type="radio" checked name="' +
           name +
           '"><label class="form-check-label" for="radio1-' +
           title +
-          '">false</label></div><div class="form-check"><input class="form-check-input" type="radio" name="' +
+          '">false</label></div><div class="form-check"><input class="form-check-input" id="radio2-' +
+          name +
+          '" type="radio" name="' +
           name +
           '" ><label class="form-check-label" for="radio2-' +
           title +
@@ -328,11 +341,31 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
   }
 
   executeCommand() {
-    const dataArr = $('#frm-command').serialize();
-    let frmData = dataArr.split('&');
-    for (let item of frmData) {
-      console.log(item);
-    }
+    // const dataArr = $('#frm-command').serialize();
+    // let frmData = dataArr.split('&');
+    // for (let item of frmData) {
+    //   console.log(item);
+    // }
+    let frmData = getFormData('frm-command');
+    console.log(frmData.fields);
+
+    // Set form data in DOM
+    // setTimeout(() => {
+    //   this._sanitizer.bypassSecurityTrustHtml($('#dataset_name').val('test'));
+
+    //   for (let key in frmData.fields) {
+    //     // console.log('input[name="' + key + '"]');
+    //     var inpt = $('#' + key);
+    //     if (inpt.attr('radio')) {
+    //       inpt.attr('checked', true);
+    //     } else {
+    //       inpt.val(frmData.fields[key]);
+    //       // console.log(inpt);
+    //     }
+    //   }
+    // }, 1000);
+
+    // setFormData('', frmData.fields);
 
     return false;
 
@@ -347,31 +380,33 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
     arr.push({ action: this.formatBreadcrumbs(this.commandName) });
 
     this.appService.responses = arr;
+    // console.log(frmData.fields);
     // console.log(this.appService.responses);
     // }
     // console.log('https://demo.zimagi.com:5123/' + command);
-    // $.ajax({
-    //   method: 'POST',
-    //   url: 'https://demo.zimagi.com:5123/' + command,
-    //   beforeSend: function (xhr: any) {
-    //     xhr.setRequestHeader(
-    //       'Authorization',
-    //       'Token admin uy5c8xiahf93j2pl8s00e6nb32h87dn3'
-    //     );
-    //   },
-    //   processData: true,
-    //   complete: function (msg: any) {
-    //     dataResponse = msg.responseText;
-    //   },
-    // });
-    // intArr = setInterval(() => {
-    //   if (dataResponse != undefined) {
-    //     clearInterval(intArr);
-    //     $('#btn-execute').attr('disabled', true);
-    //     $('#btn-execute').css('opacity', '.5');
-    //     console.log(dataResponse);
-    //   }
-    // }, 500);
+    $.ajax({
+      method: 'POST',
+      url: 'https://demo.zimagi.com:5123/' + command,
+      data: frmData.fields,
+      beforeSend: function (xhr: any) {
+        xhr.setRequestHeader(
+          'Authorization',
+          'Token admin uy5c8xiahf93j2pl8s00e6nb32h87dn3'
+        );
+      },
+      processData: true,
+      complete: function (msg: any) {
+        dataResponse = msg.responseText;
+      },
+    });
+    intArr = setInterval(() => {
+      if (dataResponse != undefined) {
+        clearInterval(intArr);
+        $('#btn-execute').attr('disabled', true);
+        $('#btn-execute').css('opacity', '.5');
+        console.log(dataResponse);
+      }
+    }, 500);
 
     // console.log('----');
     // console.log(arr);
@@ -402,6 +437,7 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
     // $('#overlay').addClass('show');
   }
 }
+
 @Pipe({ name: 'safeHtml' })
 export class SafeHtmlPipe implements PipeTransform {
   constructor(private sanitized: DomSanitizer) {}

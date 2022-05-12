@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginComponent } from './login/login.component';
 import { MaterialModule } from './shared/material/material.module';
@@ -23,6 +23,8 @@ import {
 } from '@angular/common';
 import { ActionsItemComponent } from './commands/actions-item/actions-item.component';
 import { AuthInterceptor } from './auth.interceptor';
+import { DynamicFormInputComponent } from './shared/dynamic-form-input/dynamic-form-input.component';
+import { ArrayInputComponent } from './shared/dynamic-form-input/array-input/array-input.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +42,7 @@ import { AuthInterceptor } from './auth.interceptor';
     AppRoutingModule,
     HttpClientModule,
     CommandsModule,
+    FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
     MaterialModule,

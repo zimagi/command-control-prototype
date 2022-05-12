@@ -1,0 +1,97 @@
+<div class="form-group">
+  <div [ngSwitch]="controlType">
+    <div *ngSwitchCase="'integer'">
+      <div class="pb-2" [innerHTML]="setDescription(desc, required)"></div>
+      <div>
+        <label [attr.for]="name" class="d-none">{{ label }}</label>
+        <input
+          class="form-control"
+          [name]="key"
+          [id]="key"
+          type="text"
+          [value]="value"
+        />
+      </div>
+      <span class="badge bg-secondary d-inline-block text-uppercase">{{
+        controlType
+      }}</span>
+      <span
+        *ngIf="required"
+        class="badge bg-danger d-inline-block text-uppercase"
+        >required</span
+      >
+    </div>
+
+    <div *ngSwitchCase="'string'">
+      <div class="pb-2" [innerHTML]="setDescription(desc, required)"></div>
+      <div>
+        <label [attr.for]="name" class="d-none">{{ label }}</label>
+        <input
+          class="form-control"
+          [name]="key"
+          [id]="key"
+          type="text"
+          [placeholder]="pHolder"
+          [value]="value"
+        />
+      </div>
+      <span class="badge bg-secondary d-inline-block text-uppercase">{{
+        controlType
+      }}</span>
+      <span
+        *ngIf="required"
+        class="badge bg-danger d-inline-block text-uppercase"
+        >required</span
+      >
+    </div>
+    <div *ngSwitchCase="'array'">
+      <div class="pb-2" [innerHTML]="setDescription(desc, required)"></div>
+      <app-array-input [name]="key"></app-array-input>
+    </div>
+
+    <!-- <div *ngSwitchCase="'checkbox'">
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          [name]="key"
+          [id]="key"
+        />
+        <label class="form-check-label" [attr.for]="key">{{ label }}</label>
+      </div>
+    </div> -->
+
+    <div *ngSwitchCase="'boolean'">
+      <div class="pb-2" [innerHTML]="setDescription(desc, required)"></div>
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          id="radio1-{{ name }}"
+          type="radio"
+          checked
+          [name]="name"
+        />
+        <label class="form-check-label" for="radio1-{{ name }}">false</label>
+      </div>
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          id="radio2-{{ name }}"
+          type="radio"
+          [name]="name"
+        />
+        <label class="form-check-label" for="radio2-{{ name }}">true</label>
+      </div>
+    </div>
+
+    <div *ngSwitchCase="'textarea'">
+      <label [attr.for]="key">{{ label }}</label>
+      <textarea
+        class="form-control"
+        [name]="key"
+        [id]="key"
+        rows="5"
+      ></textarea>
+    </div>
+  </div>
+</div>

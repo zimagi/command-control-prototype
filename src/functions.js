@@ -40,11 +40,13 @@ window.buildMobileMenu = function () {
     $("#main").show();
   }
 };
+
 function getUID() {
   return Math.floor((1 + Math.random()) * 0x10000)
     .toString(16)
     .substring(1);
 }
+
 $(function () {
   $('[data-toggle="popover"]').popover();
   $(window).on("resize", function (e) {
@@ -76,9 +78,9 @@ function addArrayItem(id, inpt) {
       id +
       '-li" class="list-group-item d-flex bd-highlight align-items-center"><input name="' +
       inpt +
-      "-" +
+      ":" +
       uId +
-      '"  type="text" class="form-control flex-grow-1 bd-highlight" /><a href="javascript://" onClick="$(\'#' +
+      '"  type="text" class="form-control flex-grow-1 bd-highlight arr-inpt" /><a href="javascript://" onClick="$(\'#' +
       id +
       '-li\').remove()" class="bd-highlight remove-icon" title="Remove item"><span class="sr-only">Remove</span></a></li>'
   );
@@ -89,15 +91,16 @@ function addObjItem(id, inpt) {
   $("#" + id + " ul").append(
     '<li id="' +
       id +
-      '-li" class="list-group-item d-flex bd-highlight align-items-center"><div class="col-5"><label class="form-label">Key</label><input name="' +
+      '-li" class="list-group-item d-flex bd-highlight align-items-center"><div class="col-5"><label class="form-label">Key</label><input name="key-' +
       inpt +
-      "-" +
+      ":" +
       uId +
-      '" type="text" class="form-control bd-highlight" /></div><div class="col-1 d-flex justify-content-center align-items-center"><span class="mt-4">=</span></div><div class="col-5"><label class="form-label">Value</label><input type="text" class="form-control bd-highlight" /></div><div class="col-1"><a href="javascript://" onClick="$(\'#' +
+      '" type="text" class="form-control bd-highlight obj-key obj-inpt" /></div><div class="col-1 d-flex justify-content-center align-items-center"><span class="mt-4">=</span></div><div class="col-5"><label class="form-label">Value</label><input type="text" class="form-control bd-highlight obj-value obj-inpt" /></div><div class="col-1"><a href="javascript://" onClick="$(\'#' +
       id +
       '-li\').remove()" class="bd-highlight remove-icon" style="margin-top: 1.9rem !important;margin-left: 0px !important" title="Remove item"><span class="sr-only">Remove</span></a></div></li>'
   );
 }
+
 function goTo(action) {
   setTimeout(() => {
     $("#begin").hide();
@@ -113,6 +116,7 @@ function goTo(action) {
   //   this.router.navigate(['/commands/' + this.command + '/' + action]);
   // }
 }
+
 function sortByRequired(a, b) {
   const startA = parseInt($(a).data("required"));
   const startB = parseInt($(b).data("required"));
@@ -181,4 +185,88 @@ function disableInptEnterKey() {
     alert("Handler for .submit() called.");
     event.preventDefault();
   });
+}
+
+function getFormData(frm) {
+  var fields = {};
+  $("#" + frm)
+    .find(":input")
+    .each(function () {
+      // The selector will match buttons; if you want to filter
+      // them out, check `this.tagName` and `this.type`; see
+      // below
+      var val = "";
+      // Target all radio buttons
+      if (this.type == "radio") {
+        val = $(this).is(":checked");
+        fields[this.name] = val;
+      } else {
+        val = $(this).val();
+        if (val != "") {
+          fields[this.name] = val;
+        }
+      }
+      // Target all inputs that are not arrays/objects
+      if (
+        $(this).hasClass("arr-inpt") == false &&
+        $(this).hasClass("obj-inpt") == false &&
+        this.type == "text"
+      ) {
+        val = $(this).val();
+        if (val != "") {
+          fields[this.name] = val;
+        }
+      }
+      // Target others
+      if (
+        $(this).hasClass("arr-inpt") == true ||
+        $(this).hasClass("obj-inpt") == true
+      ) {
+        var arr = [];
+        var obj = [];
+        if (this.name.indexOf(":") == -1) {
+          // Array fields
+          $(".arr-" + this.name + " :input").each(function () {
+            if ($(this).val() != "") {
+              arr.push($(this).val());
+            }
+          });
+          if (arr.length > 0) {
+            fields[this.name] = arr.toString();
+          }
+          // Object fields (Key value Pairs)
+          $(".obj-" + this.name + " li").each(function () {
+            if (
+              $(".obj-key", $(this)).val() != "" &&
+              $(".obj-value", $(this)).val()
+            ) {
+              obj.push(
+                $(".obj-key", $(this)).val() +
+                  "=" +
+                  $(".obj-value", $(this)).val()
+              );
+            }
+          });
+          if (obj.length > 0) {
+            fields[this.name] = obj.toString();
+          }
+        }
+      }
+    });
+  return { fields: fields };
+}
+
+function setFormData(frm, data) {
+  setTimeout(function () {
+    for (key in data) {
+      console.log('input[name="' + key + '"]');
+      var inpt = $('input[name="' + key + '"]');
+      if (inpt.attr("radio")) {
+        inpt.attr("checked", true);
+      } else {
+        inpt.val(data[key]);
+        console.log(inpt);
+      }
+    }
+  }, 1000);
 }
