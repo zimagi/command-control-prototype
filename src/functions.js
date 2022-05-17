@@ -1,5 +1,6 @@
 var minBrowserWidth = 992;
 var resizeTimer;
+var arrFieldErr = [];
 /** Sidenav functionality*/
 /* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
 window.openMobileNav = function () {
@@ -70,6 +71,17 @@ $(function () {
   });
 });
 
+function initIntegerFields() {
+  $(".integer").keyup(function () {
+    var val = $(this).val();
+    if (isNaN(val)) {
+      val = val.replace(/[^0-9\.]/g, "");
+      if (val.split(".").length > 2) val = val.replace(/\.+$/, "");
+    }
+    $(this).val(val);
+  });
+}
+
 function addArrayItem(id, inpt) {
   // console.log(id);
   var uId = getUID();
@@ -123,38 +135,6 @@ function sortByRequired(a, b) {
   return startA - startB;
 }
 
-// Numeric input fields
-// Restricts input for the set of matched elements to the given inputFilter function.
-// (function ($) {
-//   $.fn.inputFilter = function (callback, errMsg) {
-//     return this.on(
-//       "input keydown keyup mousedown mouseup select contextmenu drop focusout",
-//       function (e) {
-//         if (callback(this.value)) {
-//           // Accepted value
-//           if (["keydown", "mousedown", "focusout"].indexOf(e.type) >= 0) {
-//             $(this).removeClass("is-invalid");
-//             this.setCustomValidity("");
-//           }
-//           this.oldValue = this.value;
-//           this.oldSelectionStart = this.selectionStart;
-//           this.oldSelectionEnd = this.selectionEnd;
-//         } else if (this.hasOwnProperty("oldValue")) {
-//           // Rejected value - restore the previous one
-//           $(this).addClass("is-invalid");
-//           this.setCustomValidity(errMsg);
-//           this.reportValidity();
-//           this.value = this.oldValue;
-//           this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
-//         } else {
-//           // Rejected value - nothing to restore
-//           this.value = "";
-//         }
-//       }
-//     );
-//   };
-// })(jQuery);
-
 function isNumberKey(evt, id) {
   try {
     var charCode = evt.which ? evt.which : event.keyCode;
@@ -187,6 +167,43 @@ function disableInptEnterKey() {
   });
 }
 
+function customValidate(val, regx) {
+  return regx.test(val);
+}
+
+function validateForm() {
+  var strFieldRE = /^([a-zA-Z0-9 ]){2,}$/;
+  var result = true;
+
+  $("#frm-command input[required=true]").each(function () {
+    if ($(this).val() == "") {
+      if (existsInList($(this).attr("name")) == false) {
+        arrFieldErr.push({
+          field: $(this).attr("name"),
+          err: "Required field",
+        });
+      }
+
+      result = false;
+    }
+    if (
+      customValidate($(this).val(), strFieldRE) == false &&
+      $(this).hasClass("integer") == false
+    ) {
+      // For fields
+      if (existsInList($(this).attr("name")) == false) {
+        arrFieldErr.push({
+          field: $(this).attr("name"),
+          err: "Minimum 2 characters required.",
+        });
+      }
+
+      result = false;
+    }
+  });
+  return result;
+}
+
 function getFormData(frm) {
   var fields = {};
   $("#" + frm)
@@ -201,10 +218,10 @@ function getFormData(frm) {
         val = $(this).is(":checked");
         fields[this.name] = val;
       } else {
-        val = $(this).val();
-        if (val != "") {
-          fields[this.name] = val;
-        }
+        // val = $(this).val();
+        // if (val != "") {
+        //   fields[this.name] = val;
+        // }
       }
       // Target all inputs that are not arrays/objects
       if (
@@ -217,43 +234,80 @@ function getFormData(frm) {
           fields[this.name] = val;
         }
       }
-      // Target others
-      if (
-        $(this).hasClass("arr-inpt") == true ||
-        $(this).hasClass("obj-inpt") == true
-      ) {
-        var arr = [];
-        var obj = [];
-        if (this.name.indexOf(":") == -1) {
-          // Array fields
-          $(".arr-" + this.name + " :input").each(function () {
-            if ($(this).val() != "") {
-              arr.push($(this).val());
-            }
-          });
-          if (arr.length > 0) {
-            fields[this.name] = arr.toString();
-          }
-          // Object fields (Key value Pairs)
-          $(".obj-" + this.name + " li").each(function () {
-            if (
-              $(".obj-key", $(this)).val() != "" &&
-              $(".obj-value", $(this)).val()
-            ) {
-              obj.push(
-                $(".obj-key", $(this)).val() +
-                  "=" +
-                  $(".obj-value", $(this)).val()
-              );
-            }
-          });
-          if (obj.length > 0) {
-            fields[this.name] = obj.toString();
-          }
-        }
+    });
+  // Target others dynamic list components
+  $(".arr-list-component").each(function () {
+    var actionName = $(this).attr("data-action-name");
+    var arr = "";
+    $(":input", $(this)).each(function () {
+      if ($(this).val() != "") {
+        arr += '"' + $(this).val() + '"' + ",";
       }
     });
-  return { fields: fields };
+    if (arr.length > 0) {
+      fields[actionName] = JSON.stringify("{" + arr.slice(0, -1) + "}");
+      console.log(fields[actionName]);
+    }
+  });
+  $(".obj-list-component").each(function () {
+    var actionName = $(this).attr("data-action-name");
+    var arr = "";
+    $("li", $(this)).each(function () {
+      if (
+        $(".obj-key", $(this)).val() != "" &&
+        $(".obj-value", $(this)).val() != ""
+      ) {
+        arr +=
+          '"' +
+          $(".obj-key", $(this)).val() +
+          '"' +
+          ":" +
+          $(".obj-value", $(this)).val() +
+          ",";
+      }
+    });
+    if (arr.length > 0) {
+      fields[actionName] = JSON.stringify("{" + arr.slice(0, -1) + "}");
+      console.log(fields[actionName]);
+    }
+  });
+
+  return {
+    fields: fields,
+  };
+}
+
+function existsInList(field) {
+  for (var item of arrFieldErr) {
+    if (item.field == field) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function resetFormErrorMessages() {
+  for (var item of arrFieldErr) {
+    $("#" + item.field).removeClass("is-invalid");
+    $("#" + item.field).removeAttr("aria-describedby");
+    $("#err-msg-" + item.field).remove();
+  }
+  // Clear error messages
+  arrFieldErr = [];
+}
+
+function setFormErrorMessages() {
+  for (var item of arrFieldErr) {
+    $("#" + item.field).addClass("is-invalid");
+    $("#" + item.field).attr("aria-describedby", "err-msg-" + item.field);
+    $("#" + item.field).after(
+      '<div id="err-msg-' +
+        item.field +
+        '" class="invalid-feedback">' +
+        item.err +
+        "</div>"
+    );
+  }
 }
 
 function setFormData(frm, data) {

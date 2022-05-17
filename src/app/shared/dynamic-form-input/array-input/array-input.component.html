@@ -1,33 +1,97 @@
-<div [id]="name + '_arr'" class="col">
-  <ul class="list-group arr-{{ name }}">
-    <li
-      *ngFor="let input of list"
-      class="list-group-item d-flex bd-highlight align-items-center"
-    >
-      <input
-        [id]="input.name"
-        [name]="input.name"
-        type="text"
-        class="form-control flex-grow-1 bd-highlight arr-inpt"
-      />
-      <span
-        *ngIf="initialInpt == input.name"
-        class="d-inline-block"
-        style="width: 40px"
-      ></span>
-      <a
-        *ngIf="initialInpt != input.name"
-        (click)="removeInput(input.name)"
-        class="bd-highlight remove-icon"
-        title="Remove item"
-        ><span class="sr-only">Remove</span></a
+<div [ngSwitch]="type">
+  <div *ngSwitchCase="'array'">
+    <div [id]="name + '_arr'" class="col">
+      <ul
+        class="list-group arr-{{ name }} arr-list-component"
+        [attr.data-action-name]="name"
       >
-    </li>
-  </ul>
-  <a
-    href="javascript://"
-    (click)="addInput()"
-    class="btn btn-primary btn-sm my-3"
-    >+ Add</a
-  >
+        <li
+          *ngFor="let input of list"
+          class="list-group-item d-flex bd-highlight align-items-center"
+        >
+          <input
+            [id]="input.name"
+            [name]="input.name"
+            type="text"
+            class="form-control flex-grow-1 bd-highlight arr-inpt"
+            maxlength="40"
+          />
+          <span
+            *ngIf="initialInpt == input.name"
+            class="d-inline-block"
+            style="width: 40px"
+          ></span>
+          <a
+            *ngIf="initialInpt != input.name"
+            (click)="removeInput(input.name)"
+            class="bd-highlight remove-icon"
+            title="Remove item"
+            ><span class="sr-only">Remove</span></a
+          >
+        </li>
+      </ul>
+      <a
+        href="javascript://"
+        (click)="addInput()"
+        class="btn btn-primary btn-sm my-3"
+        >+ Add</a
+      >
+    </div>
+  </div>
+  <div *ngSwitchCase="'object'">
+    <div [id]="name + '_obj'" class="col">
+      <ul
+        class="list-group obj-{{ name }} obj-list-component"
+        [attr.data-action-name]="name"
+      >
+        <li
+          *ngFor="let input of list"
+          class="list-group-item d-flex bd-highlight align-items-center"
+        >
+          <div class="col-5">
+            <label class="form-label">Key</label>
+            <input
+              type="text"
+              id="key-{{ input.name }}"
+              name="key-{{ input.name }}"
+              class="form-control bd-highlight obj-key obj-inpt"
+              maxlength="20"
+            />
+          </div>
+          <div class="col-1 d-flex justify-content-center align-items-center">
+            <span class="mt-4">=</span>
+          </div>
+          <div class="col-5">
+            <label class="form-label">Value</label>
+            <input
+              [name]="input.name"
+              type="text"
+              class="form-control bd-highlight obj-value obj-inpt"
+              maxlength="100"
+            />
+          </div>
+          <div class="col-1">
+            <span
+              *ngIf="initialInpt == input.name"
+              class="d-inline-block"
+              style="width: 40px"
+            ></span>
+            <a
+              *ngIf="initialInpt != input.name"
+              (click)="removeInput(input.name)"
+              class="bd-highlight remove-icon"
+              title="Remove item"
+              ><span class="sr-only">Remove</span></a
+            >
+          </div>
+        </li>
+      </ul>
+      <a
+        href="javascript://"
+        (click)="addInput()"
+        class="btn btn-primary btn-sm my-3"
+        >+ Add</a
+      >
+    </div>
+  </div>
 </div>

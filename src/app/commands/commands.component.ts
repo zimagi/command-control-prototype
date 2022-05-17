@@ -11,6 +11,7 @@ declare const $: any;
 export class CommandsComponent implements OnInit {
   dataCommands: any[] = [];
   responsesObj: any[] = [];
+
   constructor(
     private router: Router,
     private appService: AppService,
@@ -24,7 +25,9 @@ export class CommandsComponent implements OnInit {
       this.appService.commandsList = data;
       this.dataCommands = this.appService.commandsList;
     });
+  }
 
+  ngAfterViewInit() {
     $('#main, #response-panel').css('height', window.innerHeight - 80 + 'px');
     $(window).resize(function () {
       $('#main, #response-panel').css('height', window.innerHeight - 80 + 'px');

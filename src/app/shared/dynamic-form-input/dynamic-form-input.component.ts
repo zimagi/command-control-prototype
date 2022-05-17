@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { FormField } from 'src/app/form-field';
 
 @Component({
@@ -26,6 +26,7 @@ export class DynamicFormInputComponent {
   required!: boolean;
   @Input()
   value!: boolean;
+
   constructor() {}
   setDescription(desc: string, required: boolean) {
     let result = desc.replace('(comma separated)', '');

@@ -18,9 +18,13 @@ import {
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap, delay } from 'rxjs/operators';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 declare const $: any;
-
+declare const getFormData: any;
+declare const initIntegerFields: any;
+declare const validateForm: any;
+declare const setFormErrorMessages: any;
+declare const resetFormErrorMessages: any;
 @Component({
   selector: 'app-edit-command-new',
   templateUrl: './edit-command-new.component.html',
@@ -34,13 +38,14 @@ export class EditCommandNewComponent implements OnInit {
   acceptedKeys: any[] = ['url'];
   api: any;
   authHead = 'Token admin uy5c8xiahf93j2pl8s00e6nb32h87dn3';
-  form: FormGroup | undefined;
+  form!: FormGroup;
   // form: FormGroup;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private appService: AppService,
-    private http: HttpClient
+    private http: HttpClient,
+    private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
@@ -73,7 +78,6 @@ export class EditCommandNewComponent implements OnInit {
         }, 100);
       });
       this.dataCommands = this.appService.commandsList;
-
       this.getCommandDetails(this.commandName);
     }
   }
@@ -85,6 +89,10 @@ export class EditCommandNewComponent implements OnInit {
     //     $('#inpt-fields .div-req').sort(this.appService.sortByRequired)
     //   );
     // }, 500);
+    // Init integer fields
+    setTimeout(() => {
+      initIntegerFields();
+    }, 500);
   }
 
   formatBreadcrumbs(str: string) {
@@ -115,6 +123,7 @@ export class EditCommandNewComponent implements OnInit {
     if (this.actionName === null) {
       if (obj != undefined || obj != null) {
         this.action = obj;
+        this.action.fields.sort(this.appService.sortByReq);
       }
     } else {
       for (let [key, value] of Object.entries(obj)) {
@@ -122,15 +131,17 @@ export class EditCommandNewComponent implements OnInit {
         if (key == this.actionName) {
           // console.log(value);
           this.action = value;
+          this.action.fields.sort(this.appService.sortByReq);
         }
       }
     }
     // Initialize de formControls
     // let fields = [];
     // for (let item of this.action.fields) {
-    //   fields.push(item.name : new FormControl())
+    //   fields.push({ [item.name]: '' });
     // }
-    // this.form = new FormGroup({});
+    // console.log(fields);
+    // this.form = this.fb.group({ dataset_name: 'tttt' });
   }
 
   // toFormGroup(inputs: <string>[]): FormGroup {
@@ -352,5 +363,15 @@ export class EditCommandNewComponent implements OnInit {
   //   return this._sanitizer.bypassSecurityTrustHtml(result);
   // }
 
-  executeCommand() {}
+  executeCommand() {
+    // Validate required fields
+    if (validateForm() == false) {
+      setFormErrorMessages();
+      return;
+    }
+    resetFormErrorMessages();
+
+    let frmData = getFormData('frm-command');
+    console.log(frmData.fields);
+  }
 }

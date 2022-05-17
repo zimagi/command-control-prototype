@@ -8,7 +8,6 @@ import { SafeHtmlPipe } from '../safe-html.pipe';
 import { PreloaderComponent } from '../shared/preloader/preloader.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from '../auth.interceptor';
-import { EditCommand2Component } from './edit-command2/edit-command2.component';
 import { DynamicFormInputComponent } from '../shared/dynamic-form-input/dynamic-form-input.component';
 import { DynamcFormComponent } from './dynamc-form/dynamc-form.component';
 import { EditCommandNewComponent } from './edit-command-new/edit-command-new.component';
@@ -18,7 +17,6 @@ import { ArrayInputComponent } from '../shared/dynamic-form-input/array-input/ar
   declarations: [
     EditCommandComponent,
     SafeHtmlPipe,
-    EditCommand2Component,
     DynamicFormInputComponent,
     ArrayInputComponent,
     DynamcFormComponent,

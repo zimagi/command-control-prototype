@@ -5,16 +5,19 @@
       <div>
         <label [attr.for]="name" class="d-none">{{ label }}</label>
         <input
-          class="form-control"
+          class="form-control integer"
           [name]="key"
           [id]="key"
           type="text"
           [value]="value"
+          [attr.required]="required"
+          maxlength="40"
         />
       </div>
       <span class="badge bg-secondary d-inline-block text-uppercase">{{
         controlType
-      }}</span>
+      }}</span
+      >&nbsp;
       <span
         *ngIf="required"
         class="badge bg-danger d-inline-block text-uppercase"
@@ -33,11 +36,14 @@
           type="text"
           [placeholder]="pHolder"
           [value]="value"
+          [attr.required]="required"
+          maxlength="100"
         />
       </div>
       <span class="badge bg-secondary d-inline-block text-uppercase">{{
         controlType
-      }}</span>
+      }}</span
+      >&nbsp;
       <span
         *ngIf="required"
         class="badge bg-danger d-inline-block text-uppercase"
@@ -46,7 +52,11 @@
     </div>
     <div *ngSwitchCase="'array'">
       <div class="pb-2" [innerHTML]="setDescription(desc, required)"></div>
-      <app-array-input [name]="key"></app-array-input>
+      <app-array-input [type]="controlType" [name]="key"></app-array-input>
+    </div>
+    <div *ngSwitchCase="'object'">
+      <div class="pb-2" [innerHTML]="setDescription(desc, required)"></div>
+      <app-array-input [type]="'object'" [name]="key"></app-array-input>
     </div>
 
     <!-- <div *ngSwitchCase="'checkbox'">
@@ -91,6 +101,7 @@
         [name]="key"
         [id]="key"
         rows="5"
+        [attr.required]="required"
       ></textarea>
     </div>
   </div>

@@ -95,6 +95,15 @@ export class AppService {
         catchError(this.handleError)
       );
   }
+  sortByReq(i1: any, i2: any) {
+    if (i1.required > i2.required) {
+      return 1;
+    } else if (i1.required === i2.required) {
+      return 0;
+    } else {
+      return -1;
+    }
+  }
   sortByRequired(a: any, b: any) {
     var an = a.getAttribute('data-required'),
       bn = b.getAttribute('data-required');
