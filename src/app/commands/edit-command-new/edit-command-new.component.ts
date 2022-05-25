@@ -37,7 +37,7 @@ export class EditCommandNewComponent implements OnInit {
   action: any = {};
   acceptedKeys: any[] = ['url'];
   api: any;
-  authHead = 'Token admin uy5c8xiahf93j2pl8s00e6nb32h87dn3';
+  // authHead = 'Token admin uy5c8xiahf93j2pl8s00e6nb32h87dn3';
   form!: FormGroup;
   // form: FormGroup;
   constructor(
@@ -372,6 +372,71 @@ export class EditCommandNewComponent implements OnInit {
     resetFormErrorMessages();
 
     let frmData = getFormData('frm-command');
-    console.log(frmData.fields);
+    let intArr: any;
+    let arr = this.appService.responses;
+    let command = this.formatBreadcrumbs(this.commandName);
+    let dataResponse: any;
+    // console.log(this.formatBreadcrumbs(this.commandName));
+    // if (this.actionName === null) {
+    //   this.actionName = '';
+    // } else {
+    arr.push({
+      action: this.formatBreadcrumbs(this.commandName),
+      formData: frmData.fields,
+    });
+
+    this.appService.responses = arr;
+    // console.log(frmData.fields);
+    // console.log(this.appService.responses);
+    // }
+    // console.log('https://demo.zimagi.com:5123/' + command);
+    // $.ajax({
+    //   method: 'POST',
+    //   url: this.appService.url + command,
+    //   data: frmData.fields,
+    //   beforeSend: function (xhr: any) {
+    //     xhr.setRequestHeader(
+    //       'Authorization',
+    //       'Token ' + this.appService.user + ' ' + this.appService.token
+    //     );
+    //   },
+    //   processData: true,
+    //   complete: function (msg: any) {
+    //     dataResponse = msg.responseText;
+    //   },
+    // });
+    // intArr = setInterval(() => {
+    //   if (dataResponse != undefined) {
+    //     clearInterval(intArr);
+    //     $('#btn-execute').attr('disabled', true);
+    //     $('#btn-execute').css('opacity', '.5');
+    //     console.log(dataResponse);
+    //   }
+    // }, 500);
+
+    // console.log('----');
+    // console.log(arr);
+    // console.log('----');
+    // return;
+    // this.http
+    //   .post<any[]>(
+    //     this.api + command,
+    //     {},
+    //     {
+    //       headers: new HttpHeaders({
+    //         Authorization: this.authHead,
+    //       }),
+    //     }
+    //   )
+    //   .subscribe((data: any) => {
+    //     console.log(data);
+    //   });
+    // this.appService.executeCommand(command).subscribe((data: any) => {
+    //   console.log(data);
+    // });
+    //this.appService.responses = arr;
+    // Disable execute button
+    $('#btn-execute').attr('disabled', true);
+    $('#btn-execute').css('opacity', '.5');
   }
 }

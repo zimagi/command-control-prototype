@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
+import { AppService } from '../app.service';
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -27,7 +28,8 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private appService: AppService
   ) {}
   ngOnInit(): void {
     this.loginForm = this.fb.group({
@@ -41,14 +43,18 @@ export class LoginComponent implements OnInit {
   public errorHandling = (control: string, error: string) => {
     return this.loginForm.controls[control].hasError(error);
   };
+
   onSubmit() {
     console.log(this.loginForm.value);
-
     // stop here if form is invalid
     if (this.loginForm.invalid) {
       // console.log(this.loginForm);
       return;
     }
+
+    this.appService.url = this.loginForm.value.url;
+    this.appService.user = this.loginForm.value.user;
+    this.appService.token = this.loginForm.value.token;
     this.router.navigate(['/commands']);
     // this.authService.login(this.user, this.token).subscribe((data) => {
     //   console.log('Is Login Success: ' + data);

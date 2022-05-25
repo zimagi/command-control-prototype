@@ -12,12 +12,15 @@
               hideToggle
               *ngFor="let command of dataCommands | keyvalue"
             >
-              <mat-expansion-panel-header>
+              <mat-expansion-panel-header
+                *ngIf="command.key.indexOf('_') === -1"
+              >
                 <mat-panel-title>
                   <strong>{{ command.key }}</strong>
                 </mat-panel-title>
               </mat-expansion-panel-header>
               <app-actions-item
+                *ngIf="command.key.indexOf('_') === -1"
                 [command]="command.key"
                 [actions]="command.value"
               ></app-actions-item>
@@ -56,6 +59,7 @@
       <div id="response-container" class="pt-3">
         <app-response-item
           [action]="response.action"
+          [formData]="response.formData"
           [loader]="true"
           *ngFor="let response of responsesObj"
         ></app-response-item>

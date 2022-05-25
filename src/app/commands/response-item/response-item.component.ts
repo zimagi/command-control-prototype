@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { AppService } from 'src/app/app.service';
 declare let $: any;
 @Component({
   selector: 'app-response-item',
@@ -8,6 +9,8 @@ declare let $: any;
 })
 export class ResponseItemComponent implements OnInit {
   @Input() action: string = '';
+  @Input() formData: any = [];
+  @Input() loader: boolean = false;
   result: boolean = true;
   // loader: boolean = false;
   myDate = new Date();
@@ -15,7 +18,7 @@ export class ResponseItemComponent implements OnInit {
   formatedDate: any;
   defaultColor: boolean = false;
   data: any = [];
-  @Input() loader: boolean = false;
+
   months: any[] = [
     'Jan',
     'Feb',
@@ -30,7 +33,7 @@ export class ResponseItemComponent implements OnInit {
     'Nov',
     'Dec',
   ];
-  constructor(private datePipe: DatePipe) {}
+  constructor(private datePipe: DatePipe, private appService: AppService) {}
 
   ngOnInit(): void {
     this.myDate = new Date();
@@ -43,14 +46,18 @@ export class ResponseItemComponent implements OnInit {
       this.myDate.getFullYear();
     let dataResponse: any;
     let intArr: any;
+    let url = this.appService.url;
+    let user = this.appService.user;
+    let token = this.appService.token;
+    console.log(url);
+    console.log('submitted');
+
     $.ajax({
       method: 'POST',
-      url: 'https://demo.zimagi.com:5123/' + this.action,
+      url: url + this.action,
+      data: this.formData,
       beforeSend: function (xhr: any) {
-        xhr.setRequestHeader(
-          'Authorization',
-          'Token admin uy5c8xiahf93j2pl8s00e6nb32h87dn3'
-        );
+        xhr.setRequestHeader('Authorization', 'Token ' + user + ' ' + token);
       },
       processData: true,
       complete: function (msg: any) {
@@ -75,6 +82,39 @@ export class ResponseItemComponent implements OnInit {
         $('#btn-execute').css('opacity', '1');
       }
     }, 500);
+
+    // $.ajax({
+    //   method: 'POST',
+    //   url: 'https://demo.zimagi.com:5123/' + this.action,
+    //   beforeSend: function (xhr: any) {
+    //     xhr.setRequestHeader(
+    //       'Authorization',
+    //       'Token admin uy5c8xiahf93j2pl8s00e6nb32h87dn3'
+    //     );
+    //   },
+    //   processData: true,
+    //   complete: function (msg: any) {
+    //     dataResponse = msg.responseText;
+    //   },
+    // });
+    // intArr = setInterval(() => {
+    //   if (dataResponse != undefined) {
+    //     clearInterval(intArr);
+    //     $('#btn-execute').attr('disabled', true);
+    //     $('#btn-execute').css('opacity', '.5');
+    //     console.log(dataResponse);
+    //     dataResponse = dataResponse.trim();
+    //     let jsn = this.remove_crlf(dataResponse);
+    //     // console.log(JSON.parse('[' + jsn + ']'));
+    //     // Convert all packages into one json
+    //     // this.data = JSON.parse('[' + jsn + ']');
+    //     this.infoPackagesToJson(JSON.parse('[' + jsn + ']'));
+    //     this.loader = false;
+    //     // Enable execute button
+    //     $('#btn-execute').attr('disabled', false);
+    //     $('#btn-execute').css('opacity', '1');
+    //   }
+    // }, 500);
     //18/Feb/2022 17:40:27
     // let latest_date = this.datePipe.transform(
     //   this.myDate,
@@ -94,10 +134,12 @@ export class ResponseItemComponent implements OnInit {
     //   }, 4000);
     // }, 3000);
   }
+
   remove_crlf(ref: any) {
     return ref.replace(new RegExp('[\r\n]', 'gm'), ',');
     // return ref.replace(/,/g, '\n');
   }
+
   infoPackagesToJson(obj: any) {
     let json: any[] = [];
     for (let item of obj) {

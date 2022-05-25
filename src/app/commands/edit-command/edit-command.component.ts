@@ -85,9 +85,10 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     // Sort fields by required
     setTimeout(() => {
-      $('#inpt-fields').html(
-        $('#inpt-fields .div-req').sort(this.appService.sortByRequired)
-      );
+      $('#inpt-fields')
+        .html
+        // $('#inpt-fields .div-req').sort(this.appService.sortByRequired)
+        ();
       disableInptEnterKey();
     }, 500);
   }

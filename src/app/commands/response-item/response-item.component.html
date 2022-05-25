@@ -13,11 +13,17 @@
   [ngClass]="defaultColor == true ? '' : 'text-success'"
   *ngFor="let item of data"
 >
-  <span *ngIf="item.type === 'InfoMessage'">{{ item.message }}</span>
+  <!-- <span *ngIf="item.type === 'InfoMessage'">{{ item.message }}</span>
   <span *ngIf="item.type === 'DataMessage'">
     <span class="d-block">MESSAGE: {{ item.message }}</span>
     <span class="d-block">NAME: {{ item.name }}</span>
     <span class="d-block">DATA: {{ item.data }}</span>
+  </span> -->
+  <span *ngIf="item.type === 'TableMessage'">
+    <span class="d-block">MESSAGE: {{ item.message }}</span>
+  </span>
+  <span *ngIf="item.type === 'SuccessMessage'">
+    <span class="d-block">MESSAGE: {{ item.message }}</span>
   </span>
 
   <!-- <strong>user list</strong>: 20220318224555a800x -->

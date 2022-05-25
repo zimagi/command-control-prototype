@@ -38,6 +38,7 @@
             "scripts": ["node_modules/jquery/dist/jquery.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
               "node_modules/feather-icons/dist/feather.min.js",
+              "node_modules/can-ndjson-stream/dist/global/can-ndjson-stream-2.js",
               "src/functions.js"]
           },
           "configurations": {

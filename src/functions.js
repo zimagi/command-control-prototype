@@ -172,7 +172,7 @@ function customValidate(val, regx) {
 }
 
 function validateForm() {
-  var strFieldRE = /^([a-zA-Z0-9 ]){2,}$/;
+  var strFieldRE = /^([a-zA-Z0-9 \_\-]){2,}$/;
   var result = true;
 
   $("#frm-command input[required=true]").each(function () {
@@ -186,20 +186,20 @@ function validateForm() {
 
       result = false;
     }
-    if (
-      customValidate($(this).val(), strFieldRE) == false &&
-      $(this).hasClass("integer") == false
-    ) {
-      // For fields
-      if (existsInList($(this).attr("name")) == false) {
-        arrFieldErr.push({
-          field: $(this).attr("name"),
-          err: "Minimum 2 characters required.",
-        });
-      }
+    // if (
+    //   customValidate($(this).val(), strFieldRE) == false &&
+    //   $(this).hasClass("integer") == false
+    // ) {
+    //   // For fields
+    //   // if (existsInList($(this).attr("name")) == false) {
+    //   //   arrFieldErr.push({
+    //   //     field: $(this).attr("name"),
+    //   //     err: "Minimum 2 characters required.",
+    //   //   });
+    //   // }
 
-      result = false;
-    }
+    //   result = false;
+    // }
   });
   return result;
 }

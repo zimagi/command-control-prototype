@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AppService } from '../app.service';
 declare const $: any;
 @Component({
@@ -14,6 +14,7 @@ export class CommandsComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private appService: AppService,
     private _sanitizer: DomSanitizer
   ) {}
@@ -21,6 +22,22 @@ export class CommandsComponent implements OnInit {
   ngOnInit(): void {
     // Get responses
     this.responsesObj = this.appService.responses;
+
+    // let resolvedCommands: any = this.route.snapshot.data['commandsData'];
+    // if (resolvedCommands instanceof Error) {
+    //   console.log('Error: ' + resolvedCommands);
+    // } else {
+    //   this.appService.commandsList = resolvedCommands;
+    //   this.dataCommands = this.appService.commandsList;
+    // }
+    if (
+      !this.appService.url &&
+      !this.appService.user &&
+      !this.appService.token
+    ) {
+      this.router.navigate(['/']);
+    }
+
     this.appService.getAllCommands().subscribe((data: any) => {
       this.appService.commandsList = data;
       this.dataCommands = this.appService.commandsList;
@@ -34,36 +51,33 @@ export class CommandsComponent implements OnInit {
     });
   }
 
-  buildOptions(command: any, actions: any) {
-    let result: string = '';
+  // buildOptions(command: any, actions: any) {
+  //   let result: string = '';
 
-    if (actions._type == 'link') {
-      // console.log('---' + '_link');
-      result +=
-        '<a href="commands/' +
-        command +
-        '/' +
-        command +
-        '" class="list-group-item list-group-item-action">' +
-        command +
-        '</a>';
-    } else {
-      for (let [key, value] of Object.entries(actions)) {
-        // console.log(`${key}: ${value}`);
-        result +=
-          '<a href="commands/' +
-          command +
-          '/' +
-          key +
-          '" class="list-group-item list-group-item-action">' +
-          key +
-          '</a>';
-      }
-    }
-    // console.log(result);
-    return this._sanitizer.bypassSecurityTrustHtml(result);
-  }
-  // goToPage(command: any, action: any) {
-  //   this.router.navigate(['/' + command + '/' + action]);
+  //   if (actions._type == 'link') {
+  //     // console.log('---' + '_link');
+  //     result +=
+  //       '<a href="commands/' +
+  //       command +
+  //       '/' +
+  //       command +
+  //       '" class="list-group-item list-group-item-action">' +
+  //       command +
+  //       '</a>';
+  //   } else {
+  //     for (let [key, value] of Object.entries(actions)) {
+  //       // console.log(`${key}: ${value}`);
+  //       result +=
+  //         '<a href="commands/' +
+  //         command +
+  //         '/' +
+  //         key +
+  //         '" class="list-group-item list-group-item-action">' +
+  //         key +
+  //         '</a>';
+  //     }
+  //   }
+  //   // console.log(result);
+  //   return this._sanitizer.bypassSecurityTrustHtml(result);
   // }
 }
