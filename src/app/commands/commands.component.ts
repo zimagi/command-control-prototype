@@ -11,7 +11,7 @@ declare const $: any;
 export class CommandsComponent implements OnInit {
   dataCommands: any[] = [];
   responsesObj: any[] = [];
-
+  fullScreen = false;
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -42,6 +42,8 @@ export class CommandsComponent implements OnInit {
       this.appService.commandsList = data;
       this.dataCommands = this.appService.commandsList;
     });
+
+    this.appService.getCommandsStream();
   }
 
   ngAfterViewInit() {
@@ -49,6 +51,23 @@ export class CommandsComponent implements OnInit {
     $(window).resize(function () {
       $('#main, #response-panel').css('height', window.innerHeight - 80 + 'px');
     });
+  }
+
+  toggleFull() {
+    this.fullScreen = this.fullScreen === false ? true : false;
+    if (this.fullScreen === true) {
+      //  Hide Main Container
+      $('#main-container').hide();
+      $('#response-panel').removeClass('col-4').addClass('col-12');
+    } else {
+      $('#main-container').show();
+      $('#response-panel').removeClass('col-12').addClass('col-4');
+    }
+  }
+
+  clearResponses() {
+    this.appService.responses = [];
+    this.responsesObj = this.appService.responses;
   }
 
   // buildOptions(command: any, actions: any) {

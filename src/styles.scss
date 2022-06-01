@@ -351,6 +351,26 @@ button,
 button.mat-primary {
   background-color: #8e278a !important;
 }
+.table {
+  width: 100%;
+
+  border-collapse: collapse;
+}
+.rowTh {
+  max-width: 190px !important;
+}
+// td.col-12.text-center {
+//   margin-top: -20px;
+// }
+.tbl-response .col-12.text-center {
+  position: relative;
+  min-height: 20px;
+  text-align: left !important;
+}
+.tbl-response .badge.bg-secondary {
+  margin-top: -3px !important;
+  position: absolute;
+}
 @media (max-width: 600px) {
   .mat-form-field-wrapper {
     min-width: 250px !important;

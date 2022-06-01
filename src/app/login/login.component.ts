@@ -33,9 +33,9 @@ export class LoginComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     this.loginForm = this.fb.group({
-      url: ['', Validators.required],
-      user: ['', Validators.required],
-      token: ['', Validators.required],
+      url: ['https://demo.zimagi.com:5123/', Validators.required],
+      user: ['admin', Validators.required],
+      token: ['uy5c8xiahf93j2pl8s00e6nb32h87dn3', Validators.required],
     });
   }
 

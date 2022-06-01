@@ -7,8 +7,9 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap, delay } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
-declare let $: any;
 
+declare let $: any;
+declare let ndJson: any;
 @Injectable({
   providedIn: 'root',
 })
@@ -72,20 +73,40 @@ export class AppService {
       );
   }
 
-  executeCommand(command: any): Observable<any[]> {
+  getCommandsStream(): any {
+    ndJson();
+    // fetch(this.url, {
+    //   method: 'GET',
+    //   headers: { Authorization: 'Token ' + this.user + ' ' + this.token },
+    // })
+    //   .then((response) => {
+    //     return ndjsonStream(response.body); //ndjsonStream parses the response.body
+    //   })
+    //   .then((exampleStream) => {
+    //     const reader = exampleStream.getReader();
+    //     let read: any;
+    //     reader.read().then(
+    //       (read = (result: any) => {
+    //         if (result.done) {
+    //           return;
+    //         }
+    //         console.log(result.value);
+    //         reader.read().then(read);
+    //       })
+    //     );
+    //   });
+  }
+
+  executeCommand(command: any, frmData: any): Observable<any[]> {
     this.url = this.url;
     console.log(this.url + command);
     const body = JSON.stringify(command);
     return this.http
-      .post<any[]>(
-        this.url + command,
-        {},
-        {
-          headers: new HttpHeaders({
-            Authorization: 'Token ' + this.user + ' ' + this.token,
-          }),
-        }
-      )
+      .post<any[]>(this.url + command, frmData, {
+        headers: new HttpHeaders({
+          Authorization: 'Token ' + this.user + ' ' + this.token,
+        }),
+      })
       .pipe(
         tap((data) => data),
         catchError(this.handleError)

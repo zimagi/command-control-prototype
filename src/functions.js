@@ -71,6 +71,29 @@ $(function () {
   });
 });
 
+function ndJson() {
+  // fetch("https://demo.zimagi.com:5123/", {
+  //   method: "GET",
+  //   headers: { Authorization: "Token admin uy5c8xiahf93j2pl8s00e6nb32h87dn3" },
+  // })
+  //   .then((response) => {
+  //     return ndjsonStream(response.body); //ndjsonStream parses the response.body
+  //   })
+  //   .then((exampleStream) => {
+  //     const reader = exampleStream.getReader();
+  //     let read;
+  //     reader.read().then(
+  //       (read = (result) => {
+  //         if (result.done) {
+  //           return;
+  //         }
+  //         console.log(result.value);
+  //         reader.read().then(read);
+  //       })
+  //     );
+  //   });
+}
+
 function initIntegerFields() {
   $(".integer").keyup(function () {
     var val = $(this).val();

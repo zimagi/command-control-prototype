@@ -1,6 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { AppService } from 'src/app/app.service';
+import { DomSanitizer } from '@angular/platform-browser';
+import { PipeTransform, Pipe } from '@angular/core';
+import { Data } from 'popper.js';
 declare let $: any;
 @Component({
   selector: 'app-response-item',
@@ -33,7 +36,11 @@ export class ResponseItemComponent implements OnInit {
     'Nov',
     'Dec',
   ];
-  constructor(private datePipe: DatePipe, private appService: AppService) {}
+  constructor(
+    private _sanitizer: DomSanitizer,
+    private datePipe: DatePipe,
+    private appService: AppService
+  ) {}
 
   ngOnInit(): void {
     this.myDate = new Date();
@@ -49,8 +56,13 @@ export class ResponseItemComponent implements OnInit {
     let url = this.appService.url;
     let user = this.appService.user;
     let token = this.appService.token;
-    console.log(url);
-    console.log('submitted');
+    //console.log(url);
+    //console.log('submitted');
+    // this.appService
+    //   .executeCommand(this.action, this.formData)
+    //   .subscribe((data: any) => {
+    //     console.log(data);
+    //   });
 
     $.ajax({
       method: 'POST',
@@ -140,10 +152,81 @@ export class ResponseItemComponent implements OnInit {
     // return ref.replace(/,/g, '\n');
   }
 
+  processResponse(data: any) {
+    // console.log(data.length);
+    let result = '<table class="table table-border table-striped"><thead><tr>';
+    let c = 0;
+    for (let item of data) {
+      // console.log(data[i]);
+      if (c === 0) {
+        for (let th of item) {
+          result += '<th>' + th + '</th>';
+          console.log(th);
+        }
+        result += '</tr><thead><tbody>';
+      } else {
+        result += '<tr>';
+        for (let td of item) {
+          result += '<td>' + td + '</td>';
+        }
+        result += '</tr>';
+      }
+      c++;
+    }
+    result += '</tbody></table>';
+
+    return this._sanitizer.bypassSecurityTrustHtml(result);
+  }
+
+  processResponse2(data: any) {
+    // console.log(data.length);
+    let result =
+      '<table class="table table-border table-striped tbl-response">';
+    let c = 0;
+    let rowThs = [];
+    for (let item of data[0]) {
+      rowThs.push(item);
+    }
+    for (let item of data) {
+      // console.log(data[i]);
+      if (c > 0) {
+        result +=
+          '<tr><td class="row"><div class="col-12 text-center"><span class="badge bg-secondary">' +
+          c +
+          '</span></div>';
+        let th = 0;
+        for (let td of item) {
+          if (td == '') {
+            td = '--';
+          }
+          result +=
+            '<div class="col-3 pb-3 rowTh"><strong>' +
+            rowThs[th] +
+            ':</strong></div><div class="col-9 pb-3">' +
+            td +
+            '</div>';
+          th++;
+        }
+        result += '</td></tr>';
+      }
+      c++;
+    }
+    result += '</table>';
+
+    return this._sanitizer.bypassSecurityTrustHtml(result);
+  }
+
   infoPackagesToJson(obj: any) {
     let json: any[] = [];
     for (let item of obj) {
       this.data.push(JSON.parse(item.package));
     }
+  }
+}
+@Pipe({ name: 'safeHtml' })
+export class SafeHtmlPipe implements PipeTransform {
+  constructor(private sanitized: DomSanitizer) {}
+  transform(value: string) {
+    return this.sanitized.bypassSecurityTrustHtml(value);
   }
 }
