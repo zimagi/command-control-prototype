@@ -16,7 +16,7 @@
     [ngClass]="defaultColor == true ? '' : 'text-success mt-1 py-1'"
   >
     <span class="d-block"
-      >Total results: <strong>{{ item.data }}</strong></span
+      >Database total records: <strong>{{ item.data }}</strong></span
     >
   </div>
 
@@ -35,22 +35,36 @@
   </div>
   <div
     *ngIf="item.type === 'SuccessMessage'"
-    [ngClass]="defaultColor == true ? '' : 'text-success'"
+    [ngClass]="defaultColor == true ? '' : 'text-successx'"
   >
-    <span class="d-block">{{ item.message }}</span>
+    <div class="alert alert-success mt-2">
+      <span class="d-block">{{ item.message }}</span>
+    </div>
   </div>
+
   <div
     *ngIf="item.type === 'ErrorMessage'"
     [ngClass]="defaultColor == true ? '' : 'text-danger'"
   >
-    <span class="d-block">{{ item.message }}</span>
+    <div class="alert alert-danger mt-2">
+      <span class="d-block">{{ item.message }}</span>
+    </div>
   </div>
   <div
     *ngIf="item.type === 'WarningMessage'"
     [ngClass]="defaultColor == true ? '' : 'text-warning'"
   >
-    <span class="d-block">{{ item.message }}</span>
+    <div class="alert alert-warning mt-2">
+      <span class="d-block">{{ item.message }}</span>
+    </div>
   </div>
 
   <!-- <strong>user list</strong>: 20220318224555a800x -->
 </ng-container>
+<div *ngIf="infoDataMessageTypeOnly">
+  <div class="alert alert-success mt-2">
+    <span class="d-block"
+      >The <strong>{{ action }}</strong> was successfully executed.</span
+    >
+  </div>
+</div>

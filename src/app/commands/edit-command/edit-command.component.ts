@@ -342,13 +342,14 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
   }
 
   executeCommand() {
+    console.log('xxxxx');
     // const dataArr = $('#frm-command').serialize();
     // let frmData = dataArr.split('&');
     // for (let item of frmData) {
     //   console.log(item);
     // }
     let frmData = getFormData('frm-command');
-    console.log(frmData.fields);
+    // console.log(frmData.fields);
 
     // Set form data in DOM
     // setTimeout(() => {

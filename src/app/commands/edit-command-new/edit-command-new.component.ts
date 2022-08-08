@@ -16,7 +16,7 @@ import {
   HttpErrorResponse,
   HttpHeaders,
 } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, of, from } from 'rxjs';
 import { catchError, tap, delay } from 'rxjs/operators';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 declare const $: any;
@@ -39,6 +39,8 @@ export class EditCommandNewComponent implements OnInit {
   api: any;
   // authHead = 'Token admin uy5c8xiahf93j2pl8s00e6nb32h87dn3';
   form!: FormGroup;
+  resultsArr: any = [];
+  commandsObs$: Observable<any[]> | undefined;
   // form: FormGroup;
   constructor(
     private route: ActivatedRoute,
@@ -80,6 +82,8 @@ export class EditCommandNewComponent implements OnInit {
       this.dataCommands = this.appService.commandsList;
       this.getCommandDetails(this.commandName);
     }
+
+    this.commandsObs$ = this.appService.getCommandStream();
   }
 
   ngAfterViewInit() {
@@ -123,7 +127,9 @@ export class EditCommandNewComponent implements OnInit {
     if (this.actionName === null) {
       if (obj != undefined || obj != null) {
         this.action = obj;
-        this.action.fields.sort(this.appService.sortByReq);
+        if (this.action.fields) {
+          this.action.fields.sort(this.appService.sortByReq);
+        }
       }
     } else {
       for (let [key, value] of Object.entries(obj)) {
@@ -372,6 +378,51 @@ export class EditCommandNewComponent implements OnInit {
     resetFormErrorMessages();
 
     let frmData = getFormData('frm-command');
+
+    //return;
+
+    // this.appService
+    //   .executeCommand(this.formatBreadcrumbs(this.commandName), frmData.fields)
+    //   .subscribe((data) => {
+    //     console.log(data);
+    //   });
+    // this.appService
+    //   .executeCommand(this.formatBreadcrumbs(this.commandName), frmData.fields)
+    //   .subscribe((data) => {
+    //     of(data).subscribe({
+    //       next: (item) => console.log(item),
+    //       error: (err) => console.log(err),
+    //       complete: () => console.log('complete'),
+    //     });
+    //   });
+
+    // this.appService
+    //   .executeCommand(this.formatBreadcrumbs(this.commandName), frmData.fields)
+    //   .subscribe({
+    //     next: (data) => console.log(data),
+    //     error: (err) => console.log(err),
+    //     complete: () => console.log('complete'),
+    //   });
+
+    // this.appService
+    //   .executeCommand(this.formatBreadcrumbs(this.commandName), frmData.fields)
+    //   .subscribe(
+    //     (result) => {
+    //       // Handle result
+    //       console.log(result);
+    //     },
+    //     (error) => {
+    //       // this.errors = error;
+    //       console.log('error');
+    //       console.log(error);
+    //     },
+    //     () => {
+    //       // No errors, route to new page
+    //       console.log('complete');
+    //     }
+    //   );
+    // return;
+
     let intArr: any;
     let arr = this.appService.responses;
     let command = this.formatBreadcrumbs(this.commandName);

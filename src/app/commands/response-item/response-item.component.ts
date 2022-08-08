@@ -21,7 +21,7 @@ export class ResponseItemComponent implements OnInit {
   formatedDate: any;
   defaultColor: boolean = false;
   data: any = [];
-
+  infoDataMessageTypeOnly: boolean = false;
   months: any[] = [
     'Jan',
     'Feb',
@@ -74,6 +74,9 @@ export class ResponseItemComponent implements OnInit {
       processData: true,
       complete: function (msg: any) {
         dataResponse = msg.responseText;
+      },
+      fail: function (err: any) {
+        console.log(err);
       },
     });
     intArr = setInterval(() => {
@@ -200,11 +203,11 @@ export class ResponseItemComponent implements OnInit {
             td = '--';
           }
           result +=
-            '<div class="col-3 pb-3 rowTh"><strong>' +
+            '<div class="row"><div class="col-3 pb-3 rowTh"><strong>' +
             rowThs[th] +
             ':</strong></div><div class="col-9 pb-3">' +
             td +
-            '</div>';
+            '</div></div>';
           th++;
         }
         result += '</td></tr>';
@@ -218,9 +221,22 @@ export class ResponseItemComponent implements OnInit {
 
   infoPackagesToJson(obj: any) {
     let json: any[] = [];
+    let infoDataMessageTypeOnly = true;
     for (let item of obj) {
-      this.data.push(JSON.parse(item.package));
+      let jsonPkg = JSON.parse(item.package);
+      this.data.push(jsonPkg);
+      // console.log(jsonPkg.type);
+      if (
+        jsonPkg.type === 'NoticeMessage' ||
+        jsonPkg.type === 'SuccessMessage' ||
+        jsonPkg.type === 'WarningMessage' ||
+        jsonPkg.type === 'ErrorMessage' ||
+        jsonPkg.type === 'TableMessage'
+      ) {
+        infoDataMessageTypeOnly = false;
+      }
     }
+    this.infoDataMessageTypeOnly = infoDataMessageTypeOnly;
   }
 }
 @Pipe({ name: 'safeHtml' })

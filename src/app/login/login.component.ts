@@ -21,6 +21,7 @@ export class LoginComponent implements OnInit {
   submitted = false;
   returnUrl = '';
   error = '';
+  error_message = '';
   // url = new FormControl('', Validators.required);
   // user = new FormControl('', Validators.required);
   // token = new FormControl('', Validators.required);
@@ -55,7 +56,30 @@ export class LoginComponent implements OnInit {
     this.appService.url = this.loginForm.value.url;
     this.appService.user = this.loginForm.value.user;
     this.appService.token = this.loginForm.value.token;
-    this.router.navigate(['/commands']);
+
+    this.appService.getAllCommands().subscribe(
+      (data: any) => {
+        // console.log(data.status);
+        this.appService.commandsList = data;
+        this.router.navigate(['/commands']);
+      },
+      (err) => {
+        if (err == 0) {
+          this.error_message =
+            '<strong>API Server is not responding.</strong> <br>Please contact your system administrator.';
+        }
+        // if (err == 0){
+
+        // }
+        // this.error_message = <any>err;
+
+        // console.log('//////////////');
+        // console.log(err);
+        // console.log('//////////////');
+      }
+    );
+
+    //this.router.navigate(['/commands']);
     // this.authService.login(this.user, this.token).subscribe((data) => {
     //   console.log('Is Login Success: ' + data);
 

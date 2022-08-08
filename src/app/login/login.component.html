@@ -44,6 +44,11 @@
                 >Required</mat-error
               >
             </mat-form-field>
+            <div
+              *ngIf="error_message != ''"
+              class="col-8 m-auto mb-4 alert alert-danger"
+              [innerHTML]="error_message"
+            ></div>
           </div>
 
           <button

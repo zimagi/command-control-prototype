@@ -7,6 +7,12 @@
         <div id="main" class="scroll col-3 py-4">
           <!-- <app-accordion [data]="comm"></app-accordion> -->
 
+          <div *ngIf="dataCommands.length == 0" class="alert alert-danger">
+            <strong>No commands available</strong>
+            <span class="d-block"
+              >Please contact your system administrator.</span
+            >
+          </div>
           <mat-accordion>
             <mat-expansion-panel
               hideToggle
