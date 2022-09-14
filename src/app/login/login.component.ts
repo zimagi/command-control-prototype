@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     this.loginForm = this.fb.group({
-      url: ['https://demo.zimagi.com:5123/', Validators.required],
+      url: ['https://localhost:5123/', Validators.required],
       user: ['admin', Validators.required],
       token: ['uy5c8xiahf93j2pl8s00e6nb32h87dn3', Validators.required],
     });
@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit {
       // console.log(this.loginForm);
       return;
     }
-
+    this.loading = true;
     this.appService.url = this.loginForm.value.url;
     this.appService.user = this.loginForm.value.user;
     this.appService.token = this.loginForm.value.token;
@@ -65,6 +65,7 @@ export class LoginComponent implements OnInit {
       },
       (err) => {
         if (err == 0) {
+          this.loading = false;
           this.error_message =
             '<strong>API Server is not responding.</strong> <br>Please contact your system administrator.';
         }

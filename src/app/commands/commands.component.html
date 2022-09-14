@@ -19,7 +19,9 @@
               *ngFor="let command of dataCommands | keyvalue"
             >
               <mat-expansion-panel-header
-                *ngIf="command.key.indexOf('_') === -1"
+                *ngIf="
+                  command.key.indexOf('_') === -1 && command.key !== 'status'
+                "
               >
                 <mat-panel-title>
                   <strong>{{ command.key }}</strong>

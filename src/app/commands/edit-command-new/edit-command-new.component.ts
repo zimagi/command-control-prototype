@@ -25,6 +25,7 @@ declare const initIntegerFields: any;
 declare const validateForm: any;
 declare const setFormErrorMessages: any;
 declare const resetFormErrorMessages: any;
+declare const abortFetchExecution: any;
 @Component({
   selector: 'app-edit-command-new',
   templateUrl: './edit-command-new.component.html',
@@ -254,6 +255,10 @@ export class EditCommandNewComponent implements OnInit {
   //   return this._sanitizer.bypassSecurityTrustHtml(result);
   // }
 
+  stopExecution() {
+    abortFetchExecution();
+  }
+
   getDefaultValue(val: any) {
     return val.substring(val.indexOf('<') + 1, val.lastIndexOf('>'));
   }
@@ -378,6 +383,8 @@ export class EditCommandNewComponent implements OnInit {
     resetFormErrorMessages();
 
     let frmData = getFormData('frm-command');
+
+    $('#btn-abort').removeClass('d-none');
 
     //return;
 

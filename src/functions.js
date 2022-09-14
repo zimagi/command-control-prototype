@@ -1,6 +1,8 @@
 var minBrowserWidth = 992;
 var resizeTimer;
 var arrFieldErr = [];
+var dataResponse = "";
+var dataComplete = false;
 /** Sidenav functionality*/
 /* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
 window.openMobileNav = function () {
@@ -346,4 +348,84 @@ function setFormData(frm, data) {
       }
     }
   }, 1000);
+}
+
+// Create an instance to cancel fetch request.
+const controller = new AbortController();
+const signal = controller.signal;
+let abortExecution = false;
+
+function submitFetchAPI(headers, url, data) {
+  // Fetch API
+  //url = "http://localhost:8888/stream/stream.php";
+  let _data = data;
+  dataComplete = false;
+  abortExecution = false;
+  $("#btn-abort").removeClass("d-none");
+
+  fetch(url, {
+    method: "POST",
+    signal: signal,
+    body: JSON.stringify(_data),
+    headers: headers,
+  })
+    .then((response) => response.body)
+    .then((rb) => {
+      const reader = rb.getReader();
+
+      return new ReadableStream({
+        start(controller) {
+          // The following function handles each data chunk
+          function push() {
+            // "done" is a Boolean and value a "Uint8Array"
+            reader.read().then(({ done, value }) => {
+              // If there is no more data to read
+              if (done) {
+                console.log("done", done);
+                controller.close();
+                return;
+              }
+
+              // Get the data and send it to the browser via the controller
+              //console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+              //console.log(new TextDecoder().decode(value));
+              dataResponse = new TextDecoder().decode(value);
+              //console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+              //controller.enqueue(value);
+
+              // Check chunks by logging to the console
+              console.log(done, new TextDecoder().decode(value));
+              push();
+            });
+          }
+
+          push();
+        },
+      });
+    })
+    .then((stream) =>
+      // Respond with our stream
+      new Response(stream, {
+        headers: { "Content-Type": "application/json; charset=UTF-8" },
+      }).text()
+    )
+    .then((result) => {
+      // Do things with result
+
+      console.log(result);
+
+      dataComplete = true;
+      $("#btn-abort").addClass("d-none");
+
+      // console.log("-----");
+      // dataComplete = result;
+    })
+    .catch((err) => console.log(">> " + err));
+}
+
+function abortFetchExecution() {
+  abortExecution = true;
+  // Abort.
+  controller.abort();
+  $("#btn-abort").addClass("d-none");
 }

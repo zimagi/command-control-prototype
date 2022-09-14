@@ -4,8 +4,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { EMPTY, Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AppService } from '../app.service';
+import { HostListener } from '@angular/core';
 declare const $: any;
 declare const axios: any;
+declare let dataResponse: any;
 
 @Component({
   selector: 'app-commands',
@@ -19,6 +21,7 @@ export class CommandsComponent implements OnInit {
   fullScreen = false;
 
   myCommands$ = new Observable();
+  allowRedirect = false;
 
   private errorMessage: any;
   constructor(
@@ -106,6 +109,7 @@ export class CommandsComponent implements OnInit {
     // this.appService.getAllCommands().subscribe((data: any) => {
     //   this.appService.commandsList = data;
     this.dataCommands = this.appService.commandsList;
+    console.log(this.dataCommands);
     // });
     // this.appService.getCommandsStream();
   }
@@ -130,6 +134,7 @@ export class CommandsComponent implements OnInit {
   }
 
   clearResponses() {
+    dataResponse = '';
     this.appService.responses = [];
     this.responsesObj = this.appService.responses;
   }

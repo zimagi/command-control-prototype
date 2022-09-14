@@ -61,10 +61,21 @@
 
   <!-- <strong>user list</strong>: 20220318224555a800x -->
 </ng-container>
-<div *ngIf="infoDataMessageTypeOnly">
+<div
+  *ngIf="
+    infoDataMessageTypeOnly && dataComplete === true && abortExecution === false
+  "
+>
   <div class="alert alert-success mt-2">
     <span class="d-block"
       >The <strong>{{ action }}</strong> was successfully executed.</span
+    >
+  </div>
+</div>
+<div *ngIf="abortExecution && dataComplete">
+  <div class="alert alert-danger mt-2">
+    <span class="d-block"
+      >The <strong>{{ action }}</strong> was STOPPED.</span
     >
   </div>
 </div>

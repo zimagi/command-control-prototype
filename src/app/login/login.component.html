@@ -59,6 +59,15 @@
           >
             Sign in
           </button>
+          <div class="pt-2">
+            <mat-spinner
+              *ngIf="loading"
+              class="btn-spinner m-auto"
+              [diameter]="30"
+              [color]="'primary'"
+            ></mat-spinner>
+          </div>
+
           <p class="mt-5 mb-3 text-muted">© 2022-2023</p>
         </form>
       </div>
