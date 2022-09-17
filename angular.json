@@ -39,8 +39,8 @@
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
               "node_modules/feather-icons/dist/feather.min.js",
-              "node_modules/uint8array-json-parser/uint8array-json-parser.min.js",
-              "node_modules/axios/dist/axios.min.js",
+
+
               "src/functions.js"]
           },
           "configurations": {
