@@ -42,7 +42,7 @@
           id="drop-user-container"
           class="d-inline-block p-2 d-md-none d-lg-inline-block"
         >
-          <a class="btn btn-link" [routerLink]="['/']"
+          <a class="btn btn-link" (click)="logout()"
             >Logout<mat-icon id="icon-logout" class="position-absolute ml-2"
               ><span class="d-inline-block pl-3">exit_to_app</span></mat-icon
             ></a

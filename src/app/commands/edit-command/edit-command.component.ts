@@ -8,7 +8,6 @@ import {
   SimpleChanges,
   DoCheck,
 } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
 import { PipeTransform, Pipe } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppService } from 'src/app/app.service';
@@ -17,34 +16,39 @@ import {
   HttpErrorResponse,
   HttpHeaders,
 } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, of, from } from 'rxjs';
 import { catchError, tap, delay } from 'rxjs/operators';
+import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 declare const $: any;
-declare const disableInptEnterKey: any;
 declare const getFormData: any;
-declare const setFormData: any;
-declare const alert: any;
+declare const initIntegerFields: any;
+declare const validateForm: any;
+declare const setFormErrorMessages: any;
+declare const resetFormErrorMessages: any;
+declare const abortFetchExecution: any;
 @Component({
-  selector: 'app-edit-command',
+  selector: 'app-edit-command-new',
   templateUrl: './edit-command.component.html',
   styleUrls: ['./edit-command.component.scss'],
 })
-export class EditCommandComponent implements OnInit, AfterViewInit {
+export class EditCommandComponent implements OnInit {
   dataCommands: any = [];
   commandName: any = '';
   actionName: any = '';
   action: any = {};
   acceptedKeys: any[] = ['url'];
   api: any;
-  authHead = 'Token admin uy5c8xiahf93j2pl8s00e6nb32h87dn3';
-  @Output() emitAddResponse: EventEmitter<any> = new EventEmitter();
-
+  // authHead = 'Token admin uy5c8xiahf93j2pl8s00e6nb32h87dn3';
+  form!: FormGroup;
+  resultsArr: any = [];
+  commandsObs$: Observable<any[]> | undefined;
+  // form: FormGroup;
   constructor(
-    private _sanitizer: DomSanitizer,
     private route: ActivatedRoute,
     private router: Router,
     private appService: AppService,
-    private http: HttpClient
+    private http: HttpClient,
+    private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
@@ -77,19 +81,18 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
         }, 100);
       });
       this.dataCommands = this.appService.commandsList;
-
       this.getCommandDetails(this.commandName);
     }
+
+    this.commandsObs$ = this.appService.getCommandStream();
   }
 
   ngAfterViewInit() {
     // Sort fields by required
+
+    // Init integer fields
     setTimeout(() => {
-      $('#inpt-fields')
-        .html
-        // $('#inpt-fields .div-req').sort(this.appService.sortByRequired)
-        ();
-      disableInptEnterKey();
+      initIntegerFields();
     }, 500);
   }
 
@@ -121,6 +124,9 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
     if (this.actionName === null) {
       if (obj != undefined || obj != null) {
         this.action = obj;
+        if (this.action.fields) {
+          this.action.fields.sort(this.appService.sortByReq);
+        }
       }
     } else {
       for (let [key, value] of Object.entries(obj)) {
@@ -128,6 +134,7 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
         if (key == this.actionName) {
           // console.log(value);
           this.action = value;
+          this.action.fields.sort(this.appService.sortByReq);
         }
       }
     }
@@ -204,19 +211,8 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
     return false;
   }
 
-  getSchema(obj: any) {
-    let result: string = '';
-    for (let [key, value] of Object.entries(obj)) {
-      // console.log(`${key}: ${value}`);
-      result +=
-        '<div class="mb-3 row mt-3"><label for="name" class="col-sm-3 col-form-label text-right">' +
-        key +
-        '</label><div class="col-sm-9"><input type="text" class="form-control" value="' +
-        value +
-        '" /></div></div>';
-    }
-    // console.log(result);
-    return this._sanitizer.bypassSecurityTrustHtml(result);
+  stopExecution() {
+    abortFetchExecution();
   }
 
   getDefaultValue(val: any) {
@@ -230,223 +226,32 @@ export class EditCommandComponent implements OnInit, AfterViewInit {
     return '';
   }
 
-  returnInputHtml(name: any, type: any, title: any, desc: any, req: boolean) {
-    let result: string = '';
-    // let n: number = Math.floor(Math.random() * 500) + 1;
-    let valueDefault: any = this.getDefaultValue(desc);
-    let datePlaceholder: any = this.getDatePlaceholder(desc);
-    let required = req ? '<span class="text-danger">*</span>' : '';
-    let requiredBadge = req
-      ? ' <span class="badge bg-danger d-inline-block text-uppercase">required</span>'
-      : '';
-    let requiredInp = req ? 'required' : '';
-    switch (type) {
-      case 'integer':
-        result =
-          '<div class="pb-2">' +
-          desc +
-          required +
-          '</div><input id="' +
-          name +
-          '" name="' +
-          name +
-          '" type="text" class="form-control numeric" onkeypress="return isNumberKey(event,this.id)"  value="' +
-          valueDefault +
-          '"/><div><span class="badge bg-secondary d-inline-block text-uppercase">integer</span></div>';
-        break;
-      case 'string':
-        result =
-          '<div class="pb-2">' +
-          desc +
-          required +
-          '</div><input id="' +
-          name +
-          '" name="' +
-          name +
-          '" type="text" class="form-control" value="" placeholder="' +
-          datePlaceholder +
-          '" ' +
-          requiredInp +
-          '/><div><span class="badge bg-secondary d-inline-block text-uppercase">string</span>' +
-          requiredBadge +
-          '</div>';
-        break;
-      case 'array':
-        result =
-          '<div class="pb-2">' +
-          desc.replace('(comma separated)', '') +
-          required +
-          '</div><div id="' +
-          name +
-          '_arr" class="col"><ul class="list-group arr-' +
-          name +
-          '"><li class="list-group-item d-flex bd-highlight align-items-center"><input id="' +
-          name +
-          '" name="' +
-          name +
-          '" type="text" class="form-control flex-grow-1 bd-highlight arr-inpt" /><span class="d-inline-block" style="width: 40px;"></span></li></ul><a href="javascript://" onClick="addArrayItem(\'' +
-          name.trim() +
-          "_arr', '" +
-          name.trim() +
-          '\')" class="btn btn-primary btn-sm my-3">+ Add</a></div>';
-
-        break;
-      case 'object':
-        result =
-          '<div class="pb-2">' +
-          desc +
-          required +
-          '</div><div id="' +
-          name +
-          '_obj" class="col"><ul class="list-group obj-' +
-          name +
-          '"><li class="list-group-item d-flex bd-highlight align-items-center"><div class="col-5"><label class="form-label">Key</label><input type="text" name="key-' +
-          name +
-          '" class="form-control bd-highlight obj-key obj-inpt" /></div><div class="col-1 d-flex justify-content-center align-items-center"><span class="mt-4">=</span></div><div class="col-5"><label class="form-label">Value</label><input name="' +
-          name +
-          '" type="text" class="form-control bd-highlight obj-value obj-inpt" /></div><div class="col-1"><span class="d-inline-block" style="width: 40px;"></span></div></li></ul><a href="javascript://" onClick="addObjItem(\'' +
-          name.trim() +
-          "_obj', '" +
-          name.trim() +
-          '\')" class="btn btn-primary btn-sm my-3">+ Add</a></div>';
-        break;
-      case 'boolean':
-        result =
-          '<div class="pb-2">' +
-          desc +
-          required +
-          '</div><div class="form-check"><input class="form-check-input" id="radio1-' +
-          name +
-          '" type="radio" checked name="' +
-          name +
-          '"><label class="form-check-label" for="radio1-' +
-          title +
-          '">false</label></div><div class="form-check"><input class="form-check-input" id="radio2-' +
-          name +
-          '" type="radio" name="' +
-          name +
-          '" ><label class="form-check-label" for="radio2-' +
-          title +
-          '">true</label></div>';
-        break;
-    }
-    // result +=
-    //   '<div class="mb-3 row mt-3"><label for="name" class="col-sm-3 col-form-label text-right">' +
-    //   key +
-    //   '</label><div class="col-sm-9"><input type="text" class="form-control" value="' +
-    //   value +
-    //   '" /></div></div>';
-
-    // console.log(result);
-    return this._sanitizer.bypassSecurityTrustHtml(result);
-  }
-
   executeCommand() {
-    console.log('xxxxx');
-    // const dataArr = $('#frm-command').serialize();
-    // let frmData = dataArr.split('&');
-    // for (let item of frmData) {
-    //   console.log(item);
-    // }
+    // Validate required fields
+    if (validateForm() == false) {
+      setFormErrorMessages();
+      return;
+    }
+    resetFormErrorMessages();
+
     let frmData = getFormData('frm-command');
-    // console.log(frmData.fields);
 
-    // Set form data in DOM
-    // setTimeout(() => {
-    //   this._sanitizer.bypassSecurityTrustHtml($('#dataset_name').val('test'));
-
-    //   for (let key in frmData.fields) {
-    //     // console.log('input[name="' + key + '"]');
-    //     var inpt = $('#' + key);
-    //     if (inpt.attr('radio')) {
-    //       inpt.attr('checked', true);
-    //     } else {
-    //       inpt.val(frmData.fields[key]);
-    //       // console.log(inpt);
-    //     }
-    //   }
-    // }, 1000);
-
-    // setFormData('', frmData.fields);
-
-    return false;
+    $('#btn-abort').removeClass('d-none');
 
     let intArr: any;
     let arr = this.appService.responses;
     let command = this.formatBreadcrumbs(this.commandName);
     let dataResponse: any;
-    // console.log(this.formatBreadcrumbs(this.commandName));
-    // if (this.actionName === null) {
-    //   this.actionName = '';
-    // } else {
-    arr.push({ action: this.formatBreadcrumbs(this.commandName) });
+
+    arr.push({
+      action: this.formatBreadcrumbs(this.commandName),
+      formData: frmData.fields,
+    });
 
     this.appService.responses = arr;
-    // console.log(frmData.fields);
-    // console.log(this.appService.responses);
-    // }
-    // console.log('https://demo.zimagi.com:5123/' + command);
-    $.ajax({
-      method: 'POST',
-      url: 'https://demo.zimagi.com:5123/' + command,
-      data: frmData.fields,
-      beforeSend: function (xhr: any) {
-        xhr.setRequestHeader(
-          'Authorization',
-          'Token admin uy5c8xiahf93j2pl8s00e6nb32h87dn3'
-        );
-      },
-      processData: true,
-      complete: function (msg: any) {
-        dataResponse = msg.responseText;
-      },
-    });
-    intArr = setInterval(() => {
-      if (dataResponse != undefined) {
-        clearInterval(intArr);
-        $('#btn-execute').attr('disabled', true);
-        $('#btn-execute').css('opacity', '.5');
-        console.log(dataResponse);
-      }
-    }, 500);
 
-    // console.log('----');
-    // console.log(arr);
-    // console.log('----');
-    // return;
-    // this.http
-    //   .post<any[]>(
-    //     this.api + command,
-    //     {},
-    //     {
-    //       headers: new HttpHeaders({
-    //         Authorization: this.authHead,
-    //       }),
-    //     }
-    //   )
-    //   .subscribe((data: any) => {
-    //     console.log(data);
-    //   });
-    // this.appService.executeCommand(command).subscribe((data: any) => {
-    //   console.log(data);
-    // });
-    //this.appService.responses = arr;
     // Disable execute button
     $('#btn-execute').attr('disabled', true);
     $('#btn-execute').css('opacity', '.5');
-
-    // Show overlay
-    // $('#overlay').addClass('show');
   }
-}
-
-@Pipe({ name: 'safeHtml' })
-export class SafeHtmlPipe implements PipeTransform {
-  constructor(private sanitized: DomSanitizer) {}
-  transform(value: string) {
-    return this.sanitized.bypassSecurityTrustHtml(value);
-  }
-}
-function findVal(arg0: any, key: any): any {
-  throw new Error('Function not implemented.');
 }

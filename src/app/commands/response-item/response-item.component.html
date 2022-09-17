@@ -43,7 +43,7 @@
   </div>
 
   <div
-    *ngIf="item.type === 'ErrorMessage'"
+    *ngIf="item.type === 'ErrorMessage' && dataComplete"
     [ngClass]="defaultColor == true ? '' : 'text-danger'"
   >
     <div class="alert alert-danger mt-2">
@@ -75,7 +75,8 @@
 <div *ngIf="abortExecution && dataComplete">
   <div class="alert alert-danger mt-2">
     <span class="d-block"
-      >The <strong>{{ action }}</strong> was STOPPED.</span
+      >The <strong>{{ action }}</strong> EXECUTION was
+      <strong>STOPPED</strong>.</span
     >
   </div>
 </div>

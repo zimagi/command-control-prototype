@@ -1,5 +1,5 @@
 <div class="row d-flex align-items-end flex-column">
-  <div id="frm-command">
+  <form (ngSubmit)="executeCommand()" id="frm-command">
     <div id="scroll-win" class="scroll bd-highlight">
       <div class="col-12">
         <nav
@@ -52,7 +52,7 @@
             [attr.data-required]="item.required ? 'true' : 'false'"
             *ngFor="let item of action.fields"
           >
-            <div class="card">
+            <div class="card mr-2">
               <div class="card-body">
                 <div class="mb-3 row mt-3">
                   <div class="field-container">
@@ -64,72 +64,51 @@
                       >
                     </div>
 
-                    <div
-                      class="pl-5 col-md-6"
-                      [innerHTML]="
-                        returnInputHtml(
-                          item.name,
-                          item.schema._type,
-                          item.schema.title,
-                          item.schema.description,
-                          item.required
-                        )
-                      "
-                    ></div>
+                    <app-dynamic-form-input
+                      [controlType]="item.schema._type"
+                      [key]="item.name"
+                      [label]="item.schema.title"
+                      [name]="item.name"
+                      [desc]="item.schema.description"
+                      [required]="item.required ? item.required : false"
+                      [validator]="'none'"
+                      [value]="getDefaultValue(item.schema.description)"
+                      [pHolder]="getDatePlaceholder(item.schema.description)"
+                    ></app-dynamic-form-input>
                   </div>
                 </div>
               </div>
             </div>
-
-            <!-- <mat-accordion>
-            <mat-expansion-panel hideToggle>
-              <mat-expansion-panel-header>
-                <mat-panel-title>
-                  {{ item.name }}
-                </mat-panel-title>
-              </mat-expansion-panel-header> -->
-            <!-- <ng-container *ngFor="let ele of item | keyvalue"> -->
-            <!-- <ng-container *ngIf="ele.key == 'schema'"> -->
-            <!-- <div class="mb-3 row mt-3">
-
-                <div
-                  class="pl-5 col-sm-6"
-                  [innerHTML]="returnInputHtml(item.schema._type)"
-                ></div>
-              </div> -->
-            <!-- </ng-container> -->
-            <!-- <ng-container *ngIf="ele.key == 'schema'">
-                  <div class="py-3 row my-3 border-top border-bottom">
-                    <label
-                      for="name"
-                      class="col-sm-2 col-form-label text-right"
-                      >{{ ele.key }}</label
-                    >
-                    <div
-                      [innerHTML]="getSchema(ele.value)"
-                      class="pl-5 pt-4 col-sm-6"
-                    ></div>
-                  </div>
-                </ng-container> -->
-            <!-- </ng-container> -->
-            <!-- </mat-expansion-panel>
-          </mat-accordion> -->
           </div>
         </div>
       </div>
+    </div>
+    <div>
+      <!-- <ul *ngIf="commandsObs$ | async as results">
+        <li>{{ results | json }}</li>
+        <li *ngFor="let result of results">{{ result.type }}</li>
+      </ul> -->
     </div>
     <div
       id="btn-container"
       class="mt-auto bd-highlight pt-4 border-top border-secondary"
     >
-      <!-- <a
+      <button
+        type="submit"
         id="btn-execute"
+        class="btn btn-primary"
         color="primary"
-        class="btn-lg btn-primary"
-        (click)="executeCommand()"
       >
         Execute
-      </a> -->
+      </button>
+      <a
+        (click)="stopExecution()"
+        id="btn-abort"
+        class="btn btn-default d-none"
+        style="margin-left: 1rem !important"
+      >
+        Stop execution
+      </a>
     </div>
-  </div>
+  </form>
 </div>

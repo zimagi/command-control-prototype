@@ -351,17 +351,25 @@ function setFormData(frm, data) {
 }
 
 // Create an instance to cancel fetch request.
-const controller = new AbortController();
-const signal = controller.signal;
+let controller;
+let signal;
 let abortExecution = false;
 
+function abortControllerInit() {
+  controller = new AbortController();
+  signal = controller.signal;
+}
+
 function submitFetchAPI(headers, url, data) {
+  abortControllerInit();
   // Fetch API
-  //url = "http://localhost:8888/stream/stream.php";
   let _data = data;
   dataComplete = false;
   abortExecution = false;
+
   $("#btn-abort").removeClass("d-none");
+  // Disable clear button
+  $("#btn-clear-responses").addClass("d-none");
 
   fetch(url, {
     method: "POST",
@@ -381,7 +389,7 @@ function submitFetchAPI(headers, url, data) {
             reader.read().then(({ done, value }) => {
               // If there is no more data to read
               if (done) {
-                console.log("done", done);
+                // console.log("done", done);
                 controller.close();
                 return;
               }
@@ -394,7 +402,7 @@ function submitFetchAPI(headers, url, data) {
               //controller.enqueue(value);
 
               // Check chunks by logging to the console
-              console.log(done, new TextDecoder().decode(value));
+              // console.log(done, new TextDecoder().decode(value));
               push();
             });
           }
@@ -412,10 +420,12 @@ function submitFetchAPI(headers, url, data) {
     .then((result) => {
       // Do things with result
 
-      console.log(result);
+      // console.log(result);
 
       dataComplete = true;
       $("#btn-abort").addClass("d-none");
+      // Enable clear button
+      $("#btn-clear-responses").removeClass("d-none");
 
       // console.log("-----");
       // dataComplete = result;

@@ -2,19 +2,19 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { SiteGuardGuard } from '../site-guard.guard';
 import { CommandsComponent } from './commands.component';
-import { EditCommandNewComponent } from './edit-command-new/edit-command-new.component';
+import { EditCommandComponent } from './edit-command/edit-command.component';
 
 const routes: Routes = [
   {
     path: 'commands',
-    canDeactivate: [SiteGuardGuard],
+    // canDeactivate: [SiteGuardGuard],
     component: CommandsComponent,
 
     children: [
       {
         path: ':command',
-        canDeactivate: [SiteGuardGuard],
-        component: EditCommandNewComponent,
+        // canDeactivate: [SiteGuardGuard],
+        component: EditCommandComponent,
       },
     ],
   },

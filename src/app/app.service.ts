@@ -20,6 +20,7 @@ export class AppService {
   private _url!: string;
   private _user!: string;
   private _token!: string;
+  private _logged = false;
   eventSource: any | '';
   // authHead = 'Token admin uy5c8xiahf93j2pl8s00e6nb32h87dn3';
   private subject: Subject<MessageEvent> | undefined;
@@ -28,7 +29,12 @@ export class AppService {
     private route: ActivatedRoute,
     private router: Router
   ) {}
-
+  get logged(): boolean {
+    return this._logged;
+  }
+  set logged(bool: boolean) {
+    this._logged = bool;
+  }
   get commandsList(): any[] {
     return this._commandsList;
   }
@@ -103,16 +109,6 @@ export class AppService {
   }
 
   getCommandStream(): Observable<any[]> {
-    // return this.http
-    //   .get<any[]>(this.url, {
-    //     headers: new HttpHeaders({
-    //       Authorization: 'Token ' + this.user + ' ' + this.token,
-    //     }),
-    //   })
-    //   .pipe(
-    //     tap((data) => data),
-    //     catchError(this.handleError)
-    //   );
     return this.http
       .post<any[]>(this.url + 'group/list', null, {
         headers: new HttpHeaders({
@@ -124,41 +120,6 @@ export class AppService {
         tap((data) => console.log('data', JSON.stringify(data))),
         catchError(this.handleError)
       );
-    // return this.http
-    //   .post<any[]>(this.url + 'group/list', null, {
-    //     headers: new HttpHeaders({
-    //       'Content-Type': 'application/json',
-    //       Authorization: 'Token ' + this.user + ' ' + this.token,
-    //     }),
-    //   })
-    //   .pipe(
-    //     tap((data) => console.log(data)),
-    //     catchError(this.handleError)
-    //   );
-  }
-
-  getCommandsStream(): any {
-    // ndJson();
-    // fetch(this.url, {
-    //   method: 'GET',
-    //   headers: { Authorization: 'Token ' + this.user + ' ' + this.token },
-    // })
-    //   .then((response) => {
-    //     return ndjsonStream(response.body); //ndjsonStream parses the response.body
-    //   })
-    //   .then((exampleStream) => {
-    //     const reader = exampleStream.getReader();
-    //     let read: any;
-    //     reader.read().then(
-    //       (read = (result: any) => {
-    //         if (result.done) {
-    //           return;
-    //         }
-    //         console.log(result.value);
-    //         reader.read().then(read);
-    //       })
-    //     );
-    //   });
   }
 
   executeCommand(command: any, frmData: any): Observable<any[]> {
@@ -186,6 +147,13 @@ export class AppService {
       );
   }
 
+  logout() {
+    this.router.navigate(['/']);
+    setTimeout(() => {
+      this.logged = false;
+    }, 1000);
+  }
+
   sortByReq(i1: any, i2: any) {
     if (i1.required > i2.required) {
       return 1;
@@ -195,34 +163,7 @@ export class AppService {
       return -1;
     }
   }
-  // sortByRequired(a: any, b: any) {
-  //   var an = a.getAttribute('data-required'),
-  //     bn = b.getAttribute('data-required');
 
-  //   if (an < bn) {
-  //     return 1;
-  //   }
-  //   if (an > bn) {
-  //     return -1;
-  //   }
-  //   return 0;
-  // }
-  // private handleError(err: HttpErrorResponse): Observable<never> {
-  //   // in a real world app, we may send the server to some remote logging infrastructure
-  //   // instead of just logging it to the console
-  //   let errorMessage: string;
-  //   if (err.error instanceof ErrorEvent) {
-  //     // A client-side or network error occurred. Handle it accordingly.
-  //     errorMessage = `An error occurred: ${err.error.message}`;
-  //   } else {
-  //     // The backend returned an unsuccessful response code.
-  //     // The response body may contain clues as to what went wrong,
-  //     errorMessage = `Backend returned code ${err.status}: ${err.message}`;
-  //   }
-  //   // console.error(err);
-  //   // console.log(`${err.status}`);
-  //   return throwError(() => errorMessage);
-  // }
   private handleError(err: HttpErrorResponse) {
     let errorMessage = '';
     if (err.error instanceof ErrorEvent) {
