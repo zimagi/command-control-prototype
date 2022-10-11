@@ -7,7 +7,6 @@ import {
 import { Observable, throwError, of, Subject, Observer } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
-import { isRedirect } from 'node-fetch';
 
 declare let $: any;
 
@@ -73,6 +72,7 @@ export class AppService {
     }
     return this.subject;
   }
+
   public create(url: string): Subject<MessageEvent> {
     let ws = new WebSocket(url);
 

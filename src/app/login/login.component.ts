@@ -10,6 +10,9 @@ import { first } from 'rxjs/operators';
 import { AppService } from '../app.service';
 import { AuthService } from '../auth.service';
 
+declare let creds: any;
+declare let localStorage: any;
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -57,29 +60,24 @@ export class LoginComponent implements OnInit {
     this.appService.user = this.loginForm.value.user;
     this.appService.token = this.loginForm.value.token;
 
-    this.appService.getAllCommands().subscribe(
-      (data: any) => {
-        // console.log(data.status);
-        this.appService.commandsList = data;
-        this.router.navigate(['/commands']);
-      },
-      (err) => {
-        if (err == 0) {
-          this.loading = false;
-          this.error_message =
-            '<strong>API Server is not responding.</strong> <br>Please contact your system administrator.';
-        }
-        // if (err == 0){
+    // creds = {
+    //   path: this.appService.url,
+    //   user: this.appService.user,
+    //   token: this.appService.token
+    // }
 
-        // }
-        // this.error_message = <any>err;
+    localStorage.setItem('zimagi',JSON.stringify({
+      path: this.appService.url,
+      user: this.appService.user,
+      token: this.appService.token
+    }));
 
-        // console.log('//////////////');
-        // console.log(err);
-        // console.log('//////////////');
-      }
-    );
+    console.log('---------');
+    console.log(JSON.parse((localStorage.getItem("zimagi"))));
+    console.log('---------');
 
+
+    this.authService.login();
     //this.router.navigate(['/commands']);
     // this.authService.login(this.user, this.token).subscribe((data) => {
     //   console.log('Is Login Success: ' + data);
