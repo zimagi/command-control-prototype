@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppService } from 'src/app/app.service';
+import { AuthService } from 'src/app/auth.service';
 
 @Component({
   selector: 'app-commands-header',
@@ -7,12 +8,14 @@ import { AppService } from 'src/app/app.service';
   styleUrls: ['./commands-header.component.scss'],
 })
 export class CommandsHeaderComponent implements OnInit {
-  constructor(private appService: AppService) {}
+  constructor(
+    private appService: AppService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {}
 
   logout() {
-    this.appService.logged = true;
-    this.appService.logout();
+    this.authService.logout();
   }
 }

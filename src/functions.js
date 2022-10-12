@@ -3,6 +3,8 @@ var resizeTimer;
 var arrFieldErr = [];
 var dataResponse = "";
 var dataComplete = false;
+var idleTimeNum = 10;
+var idleTime = idleTimeNum;
 /** Sidenav functionality*/
 /* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
 window.openMobileNav = function () {
@@ -182,7 +184,7 @@ function disableInptEnterKey() {
     var key = e.which;
     if (key == 13) {
       // the enter key code
-      console.log("pressed enter");
+      // console.log("pressed enter");
       return false;
     }
   });

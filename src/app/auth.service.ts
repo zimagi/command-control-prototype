@@ -5,6 +5,8 @@ import { Observable, of } from 'rxjs';
 import { tap, delay } from 'rxjs/operators';
 import { AppService } from './app.service';
 
+declare let localStorage: any;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -30,34 +32,40 @@ export class AuthService {
   // }
   loading = false;
   error_message = '';
-  constructor( private route: ActivatedRoute,
+  constructor(
+    private route: ActivatedRoute,
     private router: Router,
-    private appService: AppService) {}
-  checkLoggedIn(){
-    this.appService.getAllCommands().subscribe(
-      (data: any) => {
-        // console.log(data.status);
-        this.isUserLoggedIn = true;
-        this.appService.commandsList = data;
-      },
-      (err) => {
-        if (err == 0) {
-          this.isUserLoggedIn = false;
-          this.loading = false;
-          this.error_message =
-            '<strong>API Server is not responding.</strong> <br>Please contact your system administrator.';
-        }
+    private appService: AppService
+  ) {}
 
-      }
-    );
+  checkLoggedIn() {
+    if (JSON.parse(localStorage.getItem('zimagi'))) {
+      return true;
+    }
+    return false;
   }
 
-  login(){
+  login() {
     this.appService.getAllCommands().subscribe(
       (data: any) => {
-        // console.log(data.status);
+        console.log(data);
+        this.appService.logged = true;
         this.appService.commandsList = data;
         this.router.navigate(['/commands']);
+
+        // Set creds in local
+        localStorage.setItem(
+          'zimagi',
+          JSON.stringify({
+            url: this.appService.url,
+            user: this.appService.user,
+            token: this.appService.token,
+          })
+        );
+
+        // console.log('---------');
+        // console.log(JSON.parse(localStorage.getItem('zimagi')));
+        // console.log('---------');
       },
       (err) => {
         if (err == 0) {
@@ -71,6 +79,8 @@ export class AuthService {
 
   logout(): void {
     this.isUserLoggedIn = false;
-    localStorage.removeItem('isUserLoggedIn');
+    this.appService.logged = false;
+    localStorage.removeItem('zimagi');
+    this.router.navigate(['/']);
   }
 }

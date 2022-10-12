@@ -15,11 +15,14 @@ declare let $: any;
 })
 export class AppService {
   responsesList: any[] = [];
+
   private _commandsList: any[] = [];
   private _url!: string;
   private _user!: string;
   private _token!: string;
   private _logged = false;
+  private _processingData = false;
+
   eventSource: any | '';
   // authHead = 'Token admin uy5c8xiahf93j2pl8s00e6nb32h87dn3';
   private subject: Subject<MessageEvent> | undefined;
@@ -33,6 +36,12 @@ export class AppService {
   }
   set logged(bool: boolean) {
     this._logged = bool;
+  }
+  get processingData(): boolean {
+    return this._processingData;
+  }
+  set processingData(bool: boolean) {
+    this._processingData = bool;
   }
   get commandsList(): any[] {
     return this._commandsList;
@@ -124,10 +133,10 @@ export class AppService {
 
   executeCommand(command: any, frmData: any): Observable<any[]> {
     this.url = this.url;
-    console.log(this.url + command);
-    console.log(frmData);
+    // console.log(this.url + command);
+    // console.log(frmData);
     const body = JSON.stringify(frmData);
-    console.log(body);
+    // console.log(body);
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: 'Token ' + this.user + ' ' + this.token,
@@ -145,13 +154,6 @@ export class AppService {
         map((data) => data),
         catchError(this.handleError)
       );
-  }
-
-  logout() {
-    this.router.navigate(['/']);
-    setTimeout(() => {
-      this.logged = false;
-    }, 1000);
   }
 
   sortByReq(i1: any, i2: any) {
@@ -175,7 +177,7 @@ export class AppService {
         ', error message is: ' +
         err.message;
     }
-    console.error(errorMessage);
+    //console.error(errorMessage);
     return throwError(err.status);
   }
 }

@@ -60,6 +60,10 @@ export class ResponseItemComponent implements OnInit {
 
     let intArr: any;
     let url = this.appService.url;
+    const last = url.charAt(url.length - 1);
+    if (last != '/') {
+      url = this.appService.url + '/';
+    }
     let user = this.appService.user;
     let token = this.appService.token;
     let method = 'POST';
@@ -73,9 +77,9 @@ export class ResponseItemComponent implements OnInit {
     if (this.action === 'status') {
       method = 'GET';
     }
-    console.log(method);
-    console.log(url + this.action);
-    console.log(this.formData);
+    // console.log(method);
+    // console.log(url + this.action);
+    // console.log(this.formData);
 
     let headers = {
       'Content-type': 'application/json; charset=UTF-8',
@@ -83,6 +87,7 @@ export class ResponseItemComponent implements OnInit {
     };
     // Reset component dataComplete
     this.dataComplete = false;
+    this.appService.processingData = true;
     submitFetchAPI(headers, url + this.action, this.formData);
 
     // let last_response_len = false;
@@ -151,6 +156,7 @@ export class ResponseItemComponent implements OnInit {
       if (dataComplete == true || this.abortExecution === true) {
         clearInterval(intArr);
         this.dataComplete = true;
+        this.appService.processingData = false;
         this.loader = false;
         // Enable execute button
         $('#btn-execute').attr('disabled', false);
