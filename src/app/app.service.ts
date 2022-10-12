@@ -22,6 +22,8 @@ export class AppService {
   private _token!: string;
   private _logged = false;
   private _processingData = false;
+  private _loading = false;
+  private _errorMsg = '';
 
   eventSource: any | '';
   // authHead = 'Token admin uy5c8xiahf93j2pl8s00e6nb32h87dn3';
@@ -31,6 +33,18 @@ export class AppService {
     private route: ActivatedRoute,
     private router: Router
   ) {}
+  get loading(): boolean {
+    return this._loading;
+  }
+  set loading(bool: boolean) {
+    this._loading = bool;
+  }
+  get errorMsg(): string {
+    return this._errorMsg;
+  }
+  set errorMsg(str: string) {
+    this._errorMsg = str;
+  }
   get logged(): boolean {
     return this._logged;
   }

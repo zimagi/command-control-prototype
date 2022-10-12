@@ -46,35 +46,31 @@ export class AuthService {
   }
 
   login() {
-    this.appService.getAllCommands().subscribe(
-      (data: any) => {
-        console.log(data);
-        this.appService.logged = true;
-        this.appService.commandsList = data;
-        this.router.navigate(['/commands']);
-
-        // Set creds in local
-        localStorage.setItem(
-          'zimagi',
-          JSON.stringify({
-            url: this.appService.url,
-            user: this.appService.user,
-            token: this.appService.token,
-          })
-        );
-
-        // console.log('---------');
-        // console.log(JSON.parse(localStorage.getItem('zimagi')));
-        // console.log('---------');
-      },
-      (err) => {
-        if (err == 0) {
-          this.loading = false;
-          this.error_message =
-            '<strong>API Server is not responding.</strong> <br>Please contact your system administrator.';
-        }
-      }
-    );
+    // this.appService.getAllCommands().subscribe(
+    //   (data: any) => {
+    //     // console.log(data);
+    //     this.appService.logged = true;
+    //     this.appService.commandsList = data;
+    //     this.router.navigate(['/commands']);
+    //     // Set creds in local
+    //     localStorage.setItem(
+    //       'zimagi',
+    //       JSON.stringify({
+    //         url: this.appService.url,
+    //         user: this.appService.user,
+    //         token: this.appService.token,
+    //       })
+    //     );
+    //   },
+    //   (err) => {
+    //     if (err == 0) {
+    //       this.appService.loading = false;
+    //       console.log('error');
+    //       this.appService.errorMsg =
+    //         '<strong>API Server is not responding.</strong> <br>Please contact your system administrator.';
+    //     }
+    //   }
+    // );
   }
 
   logout(): void {

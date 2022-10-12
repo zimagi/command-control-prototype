@@ -17,14 +17,11 @@ import { AuthService } from '../auth.service';
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
-  loading = false;
+  loading!: boolean;
   submitted = false;
   returnUrl = '';
   error = '';
   error_message = '';
-  // url = new FormControl('', Validators.required);
-  // user = new FormControl('', Validators.required);
-  // token = new FormControl('', Validators.required);
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
@@ -33,6 +30,8 @@ export class LoginComponent implements OnInit {
     private appService: AppService
   ) {}
   ngOnInit(): void {
+    // this.loading = this.appService.loading;
+    // this.error_message = this.appService.errorMsg;
     this.loginForm = this.fb.group({
       url: ['', Validators.required],
       user: ['', Validators.required],
@@ -46,10 +45,13 @@ export class LoginComponent implements OnInit {
   };
 
   onSubmit() {
-    console.log(this.loginForm.value);
+    // console.log(this.loginForm.value);
     // stop here if form is invalid
-    if (this.loginForm.invalid) {
-      // console.log(this.loginForm);
+    if (
+      this.loginForm.invalid &&
+      this.loginForm.value.url.indexOf('http') == -1
+    ) {
+      this.error_message = 'Invalid url';
       return;
     }
     this.loading = true;
@@ -57,22 +59,33 @@ export class LoginComponent implements OnInit {
     this.appService.user = this.loginForm.value.user;
     this.appService.token = this.loginForm.value.token;
 
-    // this.appService.getAllCommands().subscribe(
-    //   (data: any) => {
-    //     console.log(data);
-    //     this.appService.commandsList = data;
-    //     this.router.navigate(['/commands']);
-    //   },
-    //   (err) => {
-    //     if (err == 0) {
-    //       this.loading = false;
-    //       this.error_message =
-    //         '<strong>API Server is not responding.</strong> <br>Please contact your system administrator.';
-    //     }
-    //   }
-    // );
+    this.appService.getAllCommands().subscribe(
+      (data: any) => {
+        // console.log(data);
+        this.appService.commandsList = data;
+        // Set creds in local
+        localStorage.setItem(
+          'zimagi',
+          JSON.stringify({
+            url: this.appService.url,
+            user: this.appService.user,
+            token: this.appService.token,
+          })
+        );
+        // console.log('go to commands');
+        this.router.navigate(['/commands']);
+      },
+      (err) => {
+        this.loading = false;
 
-    this.authService.login();
+        if (err == 0 || err == 404) {
+          this.error_message =
+            '<strong>Please verify your credentials</strong> ';
+        }
+      }
+    );
+
+    // this.authService.login();
     //this.router.navigate(['/commands']);
     // this.authService.login(this.user, this.token).subscribe((data) => {
     //   console.log('Is Login Success: ' + data);

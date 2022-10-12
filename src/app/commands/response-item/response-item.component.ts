@@ -4,6 +4,7 @@ import { AppService } from 'src/app/app.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { PipeTransform, Pipe } from '@angular/core';
 import { Data } from 'popper.js';
+import { AuthService } from 'src/app/auth.service';
 declare let $: any;
 declare let submitFetchAPI: any;
 declare let dataResponse: any;
@@ -45,7 +46,8 @@ export class ResponseItemComponent implements OnInit {
   constructor(
     private _sanitizer: DomSanitizer,
     private datePipe: DatePipe,
-    private appService: AppService
+    private appService: AppService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -140,16 +142,28 @@ export class ResponseItemComponent implements OnInit {
       $('#btn-execute').attr('disabled', true);
       $('#btn-execute').css('opacity', '.5');
       this.abortExecution = abortExecution;
-      if (dataResponse != undefined) {
+      if (dataResponse != undefined && dataResponse != '') {
         // console.log(dataResponse);
         dataResponse = dataResponse.trim();
+        console.log(dataResponse);
         let jsn = this.remove_crlf(dataResponse);
+        //console.log(JSON.parse(jsn).detail);
         // console.log(JSON.parse('[' + jsn + ']'));
         // Convert all packages into one json
         // this.data = JSON.parse('[' + jsn + ']');
         // console.log('----------------');
         // console.log(jsn);
         // console.log('----------------');
+        if (
+          JSON.parse(jsn).detail ==
+          'Invalid token: User credentials are invalid'
+        ) {
+          clearInterval(intArr);
+          this.dataComplete = true;
+          this.loader = false;
+          this.authService.logout();
+          return;
+        }
 
         this.infoPackagesToJson(JSON.parse('[' + jsn + ']'));
       }
