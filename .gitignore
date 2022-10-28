@@ -9,6 +9,7 @@
 
 # dependencies
 /node_modules
+/.angular/
 
 # profiling files
 chrome-profiler-events*.json
@@ -17,6 +18,7 @@ chrome-profiler-events*.json
 /.idea
 .project
 .classpath
+/.angular/cache
 .c9/
 *.launch
 .settings/

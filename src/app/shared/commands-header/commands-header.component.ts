@@ -13,6 +13,6 @@ export class CommandsHeaderComponent implements OnInit {
 
   logout() {
     this.appService.logged = true;
-    this.appService.logout();
+    //this.appService.logout();
   }
 }
