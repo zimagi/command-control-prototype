@@ -14,6 +14,8 @@ import { AppService } from '../app.service';
 import { HostListener } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { fakeAsync } from '@angular/core/testing';
+import { AuthService } from '../auth.service';
+import { fakeAsync } from '@angular/core/testing';
 declare const $: any;
 declare const axios: any;
 declare let dataResponse: any;
@@ -40,6 +42,8 @@ export class CommandsComponent implements OnInit {
   myCommands$ = new Observable();
   allowRedirect = false;
   intCommands: any;
+
+  intTimeToLogout!: any;
 
   private errorMessage: any;
   constructor(
