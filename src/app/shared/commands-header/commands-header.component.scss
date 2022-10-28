@@ -139,6 +139,10 @@ header {
   h1 {
     color: $color-primary !important;
   }
+  #drop-user-container {
+    padding: 0px !important;
+    padding-right: 0.3rem !important;
+  }
 }
 
 @media (max-width: 768px) {

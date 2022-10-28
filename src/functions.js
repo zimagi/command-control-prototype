@@ -3,6 +3,9 @@ var resizeTimer;
 var arrFieldErr = [];
 var dataResponse = "";
 var dataComplete = false;
+var idleTimeNum = 500;
+var idleTime = idleTimeNum;
+var intTimeToLogout;
 /** Sidenav functionality*/
 /* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
 window.openMobileNav = function () {
@@ -73,29 +76,6 @@ $(function () {
   });
 });
 
-function ndJson() {
-  // fetch("https://demo.zimagi.com:5123/", {
-  //   method: "GET",
-  //   headers: { Authorization: "Token admin uy5c8xiahf93j2pl8s00e6nb32h87dn3" },
-  // })
-  //   .then((response) => {
-  //     return ndjsonStream(response.body); //ndjsonStream parses the response.body
-  //   })
-  //   .then((exampleStream) => {
-  //     const reader = exampleStream.getReader();
-  //     let read;
-  //     reader.read().then(
-  //       (read = (result) => {
-  //         if (result.done) {
-  //           return;
-  //         }
-  //         console.log(result.value);
-  //         reader.read().then(read);
-  //       })
-  //     );
-  //   });
-}
-
 function initIntegerFields() {
   $(".integer").keyup(function () {
     var val = $(this).val();
@@ -143,6 +123,10 @@ function goTo(action) {
     $("#begin").hide();
   }, 200);
   // console.log(action);
+  // On small devices toggle sidemenu
+  if ($("#main").hasClass("show")) {
+    $("#main").removeClass("show");
+  }
   $(".tree-lnk").removeClass("active");
   $("#lnk-" + action.replace(/:/g, "-")).addClass("active");
   document.location.href = "../#/commands";
@@ -182,7 +166,7 @@ function disableInptEnterKey() {
     var key = e.which;
     if (key == 13) {
       // the enter key code
-      console.log("pressed enter");
+      // console.log("pressed enter");
       return false;
     }
   });

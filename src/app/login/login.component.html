@@ -1,7 +1,7 @@
 <div class="container-fluid text-center">
   <div class="row">
     <div class="col"></div>
-    <div class="col col-md-4 col-sm-12 pt-5">
+    <div class="col col-md-6 col-sm-12 pt-5">
       <div class="card">
         <form
           [formGroup]="loginForm"
@@ -18,28 +18,28 @@
           <h1 class="h3 mb-3 font-weight-normal text-primary">
             Command Interface
           </h1>
-          <div class="col-12">
+          <div class="col-12 px-4">
             <mat-form-field appearance="fill">
               <mat-label>URL</mat-label>
-              <input matInput formControlName="url" />
+              <input matInput formControlName="url" autocomplete="offx" />
               <mat-error *ngIf="errorHandling('url', 'required')"
                 >Required</mat-error
               >
             </mat-form-field>
           </div>
-          <div class="col-12">
+          <div class="col-12 px-4">
             <mat-form-field appearance="fill">
               <mat-label>USER</mat-label>
-              <input matInput formControlName="user" />
+              <input matInput formControlName="user" autocomplete="offx" />
               <mat-error *ngIf="errorHandling('user', 'required')"
                 >Required</mat-error
               >
             </mat-form-field>
           </div>
-          <div class="col-12">
+          <div class="col-12 px-4">
             <mat-form-field appearance="fill">
               <mat-label>TOKEN</mat-label>
-              <input matInput formControlName="token" />
+              <input matInput formControlName="token" autocomplete="offx" />
               <mat-error *ngIf="errorHandling('token', 'required')"
                 >Required</mat-error
               >

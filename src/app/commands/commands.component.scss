@@ -24,3 +24,10 @@
   left: 0px;
   display: block;
 }
+@media (max-width: 992px) {
+  #begin .mat-icon {
+    transform: rotate(90deg);
+    padding-top: 0px !important;
+    margin-top: -10px !important;
+  }
+}

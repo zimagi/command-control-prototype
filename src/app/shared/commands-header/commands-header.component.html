@@ -23,15 +23,31 @@
 <header>
   <div id="header" class="container-fluid">
     <div class="row bg-primary">
-      <div class="col pr-2 pt-2 pl-0">
+      <div class="col pr-2 pt-0 pl-0">
         <div class="row">
           <div id="brand-container" class="col d-flex align-items-center">
+            <div
+              style="
+                border-right: 1px solid rgba(255, 255, 255, 0.3);
+                padding-right: 1rem;
+                height: 40px;
+              "
+              class="mr-3 d-xs-block d-lg-none d-flex align-items-center"
+            >
+              <a
+                (click)="toggleCommands()"
+                id="btnToggleCommands"
+                class="d-block"
+                style="text-decoration: none; margin-top: 0.7rem"
+                ><mat-icon>menu</mat-icon></a
+              >
+            </div>
             <!-- Brand -->
             <div class="d-inline-block brand">
               <span class="sr-only">Zimagi</span>
             </div>
             <!-- /. Brand -->
-            <h1 class="p-0 m-0">
+            <h1 class="p-0 m-0 d-none d-md-block">
               <span>Command Interface</span>
             </h1>
           </div>
@@ -40,9 +56,12 @@
       <div class="col d-flex flex-row-reverse">
         <div
           id="drop-user-container"
-          class="d-inline-block p-2 d-md-none d-lg-inline-block"
+          class="d-inline-block p-2 p-sm-0 p-xs-0 p-md-0 d-md-nonex d-lg-inline-block"
         >
-          <a class="btn btn-link" (click)="logout()"
+          <a
+            class="btn btn-link d-block"
+            style="margin-right: 1rem"
+            (click)="logout()"
             >Logout<mat-icon id="icon-logout" class="position-absolute ml-2"
               ><span class="d-inline-block pl-3">exit_to_app</span></mat-icon
             ></a
@@ -71,12 +90,12 @@
           <!-- /. User settings -->
         </div>
 
-        <div
+        <!-- <div
           id="lnk-documentation-container"
           class="d-inline-block p-2 d-md-none d-lg-inline-block"
         >
           <a id="lnk-documentation" href="#" class="btn btn-link">Help</a>
-        </div>
+        </div> -->
 
         <div class="d-inline-block p-2 d-lg-none">
           <span onclick="window.openMobileNav()"
@@ -87,10 +106,12 @@
     </div>
   </div>
 </header>
-<div id="mobile-platform-name" class="container-fluid d-lg-none">
+<div id="mobile-platform-name" class="container-fluid d-none">
   <div class="row border-bottom border-primary">
     <div class="col-12 p-3">
-      <div class="col px-5"><!--Head Platform title will be moved here--></div>
+      <div class="col px-5">
+        <!--Head Platform title will be moved here-->
+      </div>
     </div>
   </div>
 </div>
