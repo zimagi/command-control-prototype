@@ -15,4 +15,8 @@ export class CommandsHeaderComponent implements OnInit {
     this.appService.logged = true;
     //this.appService.logout();
   }
+  toggleCommands(){
+    //
+    return false; 
+  }
 }
