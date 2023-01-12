@@ -106,12 +106,9 @@ export class ResponseItemComponent implements OnInit {
         // Convert all packages into one json
         // this.data = JSON.parse('[' + jsn + ']');
         // console.log('----------------');
-        // console.log(jsn);
+        console.log(jsn);
         // console.log('----------------');
-        if (
-          JSON.parse(dataResponse).detail ==
-          'Invalid token header. Credentials can not be decrypted'
-        ) {
+        if (JSON.parse(dataResponse).detail.indexOf('Invalid') > -1) {
           clearInterval(intArr);
           this.dataComplete = true;
           this.loader = false;
