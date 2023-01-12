@@ -26,4 +26,8 @@ export class CommandsHeaderComponent implements OnInit {
       $('#main').addClass('show');
     }
   }
+  toggleCommands(){
+    //
+    return false; 
+  }
 }
